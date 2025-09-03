@@ -25,6 +25,15 @@ export const generateBox = (ctx, startX, startY, endX, endY, pixelSize, color, c
     }
 };
 
+export const generateSphere = (ctx, startX, startY, radius, pixelSize, color) => {
+    const centerX = startX + radius;
+    const centerY = startY + radius;
+    const conditionFn = (x, y) => {
+        return (Math.pow((x - centerX), 2) / Math.pow(radius, 2)) + (Math.pow((y - centerY), 2) / Math.pow(radius, 2)) < 1;
+    }
+    generateBox(ctx, startX, startY, startX + (radius * 2), startY + (radius * 2), pixelSize, color, conditionFn);
+};
+
 const genetateInsideBoxColor = (canvas, startX, startY, endX, endY, pixelSize, bgColor) => {
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = bgColor;

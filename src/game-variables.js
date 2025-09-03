@@ -108,3 +108,7 @@ export const toBoardPixelSize = (value) => {
 export const removeBoardPixelSize = (value) => {
     return value / GameVars.boardPixelSize;
 }
+
+export const convertToMapPixel = (value, amount = 2) => {
+    return value / toPixelSize(amount);
+};

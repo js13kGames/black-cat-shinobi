@@ -79,7 +79,7 @@ export class Player {
         this.collisionObj.y = rect.y;
         let drawX = this.collisionObj.x < GameVars.gameHW ? this.collisionObj.x : GameVars.gameHW;
         drawX = this.collisionObj.x > GameVars.levelW - GameVars.gameHW ? GameVars.gameHW * 2 - (GameVars.levelW - this.collisionObj.x) : drawX;
-        this.playerCanv.style.translate = (drawX) + 'px ' + (this.collisionObj.y) + 'px';
+        this.playerCanv.style.translate = (drawX) + 'px ' + (this.collisionObj.y + toPixelSize(3)) + 'px';
     }
 
     draw() {

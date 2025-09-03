@@ -13,7 +13,7 @@ export class HouseCeiling {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "#41663d";
+        ctx.fillStyle = "#4c8062";
         ctx.fillRect(this.collisionObj.x, this.collisionObj.y, toPixelSize(16), toPixelSize(8));
     }
 
