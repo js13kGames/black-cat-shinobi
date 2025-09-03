@@ -40,7 +40,7 @@ export const CharacterFrontIddle = [
     [
         [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
         [null, null, null, null, null, "sk", null, null, null, null, "sk", null, null, null, null, null],
-        [null, null, "mc", null, null, "sk", "sk", null, null, "sk", "sk", null, null, "mc", null, null],
+        [null, null, null, null, null, "sk", "sk", null, null, "sk", "sk", null, null, null, null, null],
         [null, null, "mc", "mc", null, "lc", "lc", "lc", "lc", "lc", "lc", null, "mc", "mc", null, null],
         [null, null, null, "mc", "mc", "sk", "lc", "lc", "lc", "lc", "sk", "mc", "mc", null, null, null],
         [null, null, null, null, null, "sk", "ey", "sk", "sk", "ey", "sk", null, null, null, null, null],
@@ -79,8 +79,8 @@ export const CharacterSideIddle = [
     [
         [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
         [null, null, null, null, null, null, "sk", null, null, null, null, "sk", null, null, null, null],
-        [null, null, "mc", "mc", null, null, "sk", "sk", null, null, "sk", "sk", null, "mc", null, null],
-        [null, null, null, "mc", "mc", null, "lc", "lc", "lc", "lc", "lc", "lc", "mc", "mc", null, null],
+        [null, null, null, null, null, null, "sk", "sk", null, null, "sk", "sk", null, null, null, null],
+        [null, null, "mc", "mc", "mc", null, "lc", "lc", "lc", "lc", "lc", "lc", "mc", "mc", null, null],
         [null, null, null, null, "mc", "mc", "sk", "lc", "lc", "lc", "lc", "lc", "mc", null, null, null],
         [null, null, null, null, null, null, "sk", "sk", "ey", "sk", "sk", "ey", null, null, null, null],
         [null, null, null, null, null, null, "sk", "sk", "sk", "sk", "sk", "sk", null, null, null, null],
@@ -179,7 +179,7 @@ export const CharacterRun = [
         [null, null, null, null, null, "mc", "mc", "mc", "sk", "lc", "lc", "lc", "lc", "lc", null, null],
         [null, null, null, null, null, null, null, null, "sk", "sk", "ey", "sk", "sk", "ey", null, null],
         [null, null, null, null, null, null, null, null, "sk", "sk", "sk", "sk", "sk", "sk", null, null],
-        [null,"sk", "mc", "dc", "dc", "dc", "dc", "dc", "dc", "sk", "sk", "sk", "sk", "sk", null, null],
+        [null, "sk", "mc", "dc", "dc", "dc", "dc", "dc", "dc", "sk", "sk", "sk", "sk", "sk", null, null],
         [null, null, null, "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", null, null, null],
         [null, null, null, null, null, "dc", "dc", "dc", "dc", "dc", "dc", "dc", null, null, null, null],
         [null, null, null, null, null, null, "lc", "lc", "lc", "lc", "lc", null, null, null, null, null],

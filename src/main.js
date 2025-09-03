@@ -2,7 +2,7 @@ import { getInputKey, InputKey } from "./enums/movement-type";
 import { Game } from "./game";
 import { GameVars, toPixelSize } from "./game-variables";
 import { CharacterAtk, CharacterFrontIddle, CharacterJump, CharacterRun, CharacterSideIddle, EnemyColors, PlayerColors, Shuriken } from "./sprites/character";
-import {createElem} from "./utilities/elem-utilities"
+import { createElem } from "./utilities/elem-utilities"
 const { drawSprite } = require("./utilities/draw-utilities");
 
 const getTime = typeof performance === 'function' ? performance.now : Date.now;
@@ -69,7 +69,6 @@ const gameLoop = () => {
         then = now - (elapsed % fpsInterval);
         GameVars.deltaTime = elapsed / 1000;
         GameVars.game.update();
-        GameVars.game.draw();
     }
     window.requestAnimationFrame(() => gameLoop());
 }

@@ -1,3 +1,5 @@
+import { InputKey } from "../enums/movement-type";
+import { TileType } from "../enums/tile-type";
 import { GameVars, toPixelSize } from "../game-variables";
 
 export const rectCollision = (rect1, rect2) => {
@@ -31,14 +33,23 @@ export const distBetwenObjs = (obj1, obj2) => {
     return Math.sqrt(num * num + num2 * num2);
 }
 
-export const checkForCollisions = (fakeMovRect, fn) => {
+export const checkForCollisions = (originalRect, fakeMovRect, fn, isGravity) => {
     const boardX = Math.round((fakeMovRect.x + (fakeMovRect.w / 2)) / toPixelSize(16));
     const boardY = Math.round((fakeMovRect.y + (fakeMovRect.h / 2)) / toPixelSize(16));
-    const board = GameVars.game.board;
-    if(boardX <= 0 || boardX >= board[0].length || boardY <= 0 || boardY >= board.length) return true;
-    for(let y = clamp(boardY - 1, 0, board.length - 1); y <= clamp(boardY + 1, 0, board.length - 1); y++){
-        for(let x = clamp(boardX - 1, 0, board[0].length - 1); x <= clamp(boardX + 1, 0, board[0].length - 1); x++){
-            if(!!board[y][x] && rectCollision(fakeMovRect, board[y][x].collisionObj)){
+    const board = GameVars.game.board.boardArray;
+    if (boardX <= 0 || boardX >= board[0].length || boardY <= 0 || boardY >= board.length) return true;
+    for (let y = clamp(boardY - 1, 0, board.length - 1); y <= clamp(boardY + 1, 0, board.length - 1); y++) {
+        for (let x = clamp(boardX - 1, 0, board[0].length - 1); x <= clamp(boardX + 1, 0, board[0].length - 1); x++) {
+            if (!!board[y][x] && rectCollision(fakeMovRect, board[y][x].collisionObj)) {
+                if (isGravity) {
+                    if (board[y][x].tileType === TileType.HOUSE_CEILING && !GameVars.keys[InputKey.JUMP] && rectCollision(originalRect, board[y][x].collisionObj)) {
+                        continue;
+                    }
+                } else {
+                    if (board[y][x].tileType === TileType.HOUSE_CEILING) {
+                        continue;
+                    }
+                }
                 return true;
             }
         }
@@ -47,8 +58,8 @@ export const checkForCollisions = (fakeMovRect, fn) => {
     return false;
 }
 
-const clamp = (number, min, max) => {
-  return Math.max(min, Math.min(number, max));
+export const clamp = (number, min, max) => {
+    return Math.max(min, Math.min(number, max));
 }
 
 export const lineCircleCollision = (line, circle) => {
