@@ -40,7 +40,7 @@ export const checkForCollisions = (originalRect, fakeMovRect, fn, isGravity) => 
     if (boardX <= 0 || boardX >= board[0].length || boardY <= 0 || boardY >= board.length) return true;
     for (let y = clamp(boardY - 1, 0, board.length - 1); y <= clamp(boardY + 1, 0, board.length - 1); y++) {
         for (let x = clamp(boardX - 1, 0, board[0].length - 1); x <= clamp(boardX + 1, 0, board[0].length - 1); x++) {
-            if (!!board[y][x] && rectCollision(fakeMovRect, board[y][x].collisionObj)) {
+            if (!!board[y][x] && board[y][x].isCollidable && rectCollision(fakeMovRect, board[y][x].collisionObj)) {
                 if (isGravity) {
                     if (board[y][x].tileType === TileType.HOUSE_CEILING && !GameVars.keys[InputKey.JUMP] && rectCollision(originalRect, board[y][x].collisionObj)) {
                         continue;

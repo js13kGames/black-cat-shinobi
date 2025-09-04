@@ -11,6 +11,7 @@ export class Game {
         this.lastXdiff = 0;
         this.board = new Board(levelOne);
         this.player = new Player();
+        this.board.createFrontCanvas();
     }
 
     update() {
@@ -27,5 +28,10 @@ export class Game {
                 this.lastXdiff = newCamX;
             }
         }
+    }
+
+    draw() {
+        this.board.draw();
+        this.player.draw();
     }
 }

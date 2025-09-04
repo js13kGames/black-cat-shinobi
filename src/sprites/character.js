@@ -4,7 +4,7 @@ const grmd = "#3e3846";
 
 export const EnemyColors = {
     "ey": "#ffff57",
-    "sk": "#1b1116",
+    "sk": "#100f0f",
     "lc": "#a80000",
     "mc": "#641f14",
     "dc": "#431313",
@@ -12,7 +12,7 @@ export const EnemyColors = {
 
 export const PlayerColors = {
     "ey": "#ffff57",
-    "sk": "#1b1116",
+    "sk": "#100f0f",
     "lc": "#10495e",
     "mc": "#3e3846",
     "dc": "#38252e",

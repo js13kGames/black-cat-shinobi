@@ -34,7 +34,9 @@ const init = () => {
 
     GameVars.mainMenuDiv.classList.add("hidden");
     GameVars.gameDiv.classList.remove("hidden");
+
     GameVars.game = new Game();
+    GameVars.game.draw();
 
     window.requestAnimationFrame(() => gameLoop());
 }

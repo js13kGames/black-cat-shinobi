@@ -16,7 +16,7 @@ export class Player {
         this.playerCanvCtx = this.playerCanv.getContext("2d");
 
         this.playerSpeed = toPixelSize(80);
-        this.collisionObj = new SquareObject(1 * toPixelSize(16), 1 * toPixelSize(16), toPixelSize(16), toPixelSize(16));
+        this.collisionObj = new SquareObject(toPixelSize(20), toPixelSize(16), toPixelSize(8), toPixelSize(16));
         this.fakeMovRect = new SquareObject(this.collisionObj.x, this.collisionObj.y, this.collisionObj.w, this.collisionObj.h);
 
         this.charAnim = new CharAnimation();
@@ -24,8 +24,6 @@ export class Player {
         this.animationDir = 0;
 
         this.gravityMultiplier = 1;
-
-        this.draw();
     }
 
     update() {
@@ -79,13 +77,13 @@ export class Player {
         this.collisionObj.y = rect.y;
         let drawX = this.collisionObj.x < GameVars.gameHW ? this.collisionObj.x : GameVars.gameHW;
         drawX = this.collisionObj.x > GameVars.levelW - GameVars.gameHW ? GameVars.gameHW * 2 - (GameVars.levelW - this.collisionObj.x) : drawX;
-        this.playerCanv.style.translate = (drawX) + 'px ' + (this.collisionObj.y + toPixelSize(3)) + 'px';
+        this.playerCanv.style.translate = (drawX - toPixelSize(4)) + 'px ' + (this.collisionObj.y + toPixelSize(4)) + 'px';
     }
 
     draw() {
         this.playerCanvCtx.clearRect(0, 0, this.playerCanv.width, this.playerCanv.height);
         // this.playerCanvCtx.fillStyle = "red";
-        // this.playerCanvCtx.fillRect(0, 0, this.collisionObj.w, this.collisionObj.h);
+        // this.playerCanvCtx.fillRect(toPixelSize(4), 0, this.collisionObj.w, this.collisionObj.h);
         drawSprite(this.playerCanvCtx, this.charAnim.getSpriteToDraw(), toPixelSize(1), 0, 0, PlayerColors, this.charAnim.isInverted);
     }
 }
