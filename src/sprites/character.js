@@ -14,45 +14,6 @@ export const PlayerColors = {
     "dc": "#38252e",
 };
 
-export const CharacterFrontIddle = [
-    [
-        [null, null, null, null, null, "sk", null, null, null, null, "sk", null, null, null, null, null],
-        [null, null, null, null, null, "sk", "sk", null, null, "sk", "sk", null, null, null, null, null],
-        [null, null, null, null, null, "lc", "lc", "lc", "lc", "lc", "lc", null, null, null, null, null],
-        [null, null, null, "mc", "mc", "sk", "lc", "lc", "lc", "lc", "sk", "mc", "mc", null, null, null],
-        [null, null, "mc", "mc", null, "sk", "ey", "sk", "sk", "ey", "sk", null, "mc", "mc", null, null],
-        [null, null, "mc", null, null, "sk", "sk", "sk", "sk", "sk", "sk", null, null, "mc", null, null],
-        [null, null, null, null, "dc", "dc", "sk", "sk", "sk", "sk", "dc", "dc", null, null, null, null],
-        [null, null, null, "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", null, null, null],
-        [null, null, null, "dc", "dc", null, "dc", "dc", "dc", "dc", null, "dc", "dc", null, null, null],
-        [null, null, null, "mc", null, null, "lc", "lc", "lc", "lc", null, null, "mc", null, null, null],
-        [null, null, null, "sk", null, "dc", "mc", "dc", "dc", "dc", "dc", null, "sk", null, null, null],
-        [null, null, null, null, "dc", "dc", "mc", "dc", "dc", "dc", "dc", "dc", null, null, null, null],
-        [null, null, null, null, "dc", "dc", null, null, null, null, "dc", "dc", null, null, null, null],
-        [null, null, null, null, "dc", null, null, null, null, null, null, "dc", null, null, null, null],
-        [null, null, null, null, "mc", null, null, null, null, null, null, "mc", null, null, null, null],
-        [null, null, null, "sk", "sk", null, null, null, null, null, null, "sk", "sk", null, null, null],
-    ],
-    [
-        [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-        [null, null, null, null, null, "sk", null, null, null, null, "sk", null, null, null, null, null],
-        [null, null, null, null, null, "sk", "sk", null, null, "sk", "sk", null, null, null, null, null],
-        [null, null, "mc", "mc", null, "lc", "lc", "lc", "lc", "lc", "lc", null, "mc", "mc", null, null],
-        [null, null, null, "mc", "mc", "sk", "lc", "lc", "lc", "lc", "sk", "mc", "mc", null, null, null],
-        [null, null, null, null, null, "sk", "ey", "sk", "sk", "ey", "sk", null, null, null, null, null],
-        [null, null, null, null, "dc", "sk", "sk", "sk", "sk", "sk", "sk", "dc", null, null, null, null],
-        [null, null, null, "dc", "dc", "dc", "sk", "sk", "sk", "sk", "dc", "dc", "dc", null, null, null],
-        [null, null, null, "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", null, null, null],
-        [null, null, null, "mc", null, null, "dc", "dc", "dc", "dc", null, null, "mc", null, null, null],
-        [null, null, null, "sk", null, null, "lc", "lc", "lc", "lc", null, null, "sk", null, null, null],
-        [null, null, null, null, null, "dc", "mc", "dc", "dc", "dc", "dc", null, null, null, null, null],
-        [null, null, null, null, "dc", "dc", "mc", "dc", "dc", "dc", "dc", "dc", null, null, null, null],
-        [null, null, null, null, "dc", "dc", null, null, null, null, "dc", "dc", null, null, null, null],
-        [null, null, null, null, "mc", null, null, null, null, null, null, "mc", null, null, null, null],
-        [null, null, null, "sk", "sk", null, null, null, null, null, null, "sk", "sk", null, null, null],
-    ],
-];
-
 export const CharacterSideIddle = [
     [
         [null, null, null, null, null, null, "sk", null, null, null, null, "sk", null, null, null, null],

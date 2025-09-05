@@ -2,7 +2,7 @@ import { GameState } from "./enums/game-state";
 import { getInputKey, InputKey } from "./enums/movement-type";
 import { Game } from "./game";
 import { convertToMapPixel, GameVars, toPixelSize } from "./game-variables";
-import { CharacterAtk, CharacterFall, CharacterFrontIddle, CharacterJump, CharacterRun, CharacterSideIddle, EnemyColors, PlayerColors, Shuriken } from "./sprites/character";
+import { CharacterAtk, CharacterFall, CharacterJump, CharacterRun, CharacterSideIddle, EnemyColors, PlayerColors, Shuriken } from "./sprites/character";
 import { generateBox, generateSphere, genSmallBox } from "./utilities/box-generator";
 import { createElem, setElemSize } from "./utilities/elem-utilities"
 import { randomNumb } from "./utilities/general-utilities";

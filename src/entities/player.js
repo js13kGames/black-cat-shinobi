@@ -1,28 +1,29 @@
-import { CircleObject } from "../collision-objects/circle-object";
 import { SquareObject } from "../collision-objects/square-object";
 import { AnimationType } from "../enums/animation-type";
-import { GameState } from "../enums/game-state";
 import { InputKey } from "../enums/movement-type";
 import { GameVars, toPixelSize } from "../game-variables";
-import { CharacterFrontIddle, PlayerColors } from "../sprites/character";
+import { PlayerColors } from "../sprites/character";
+import { levels } from "../sprites/levels";
 import { checkForCollisions } from "../utilities/collision-utilities";
 import { drawSprite } from "../utilities/draw-utilities";
-import { createElem } from "../utilities/elem-utilities";
+import { createElem, setElemSize } from "../utilities/elem-utilities";
 import { CharAnimation } from "./char-animation";
-import { Point } from "./point";
 
 export class Player {
     constructor() {
-        this.playerCanv = createElem(GameVars.gameDiv, "canvas", null, null, toPixelSize(16), toPixelSize(16));
+        this.playerCanv = createElem(GameVars.gameDiv, "canvas");
         this.playerCanvCtx = this.playerCanv.getContext("2d");
         this.reset();
     }
 
     reset() {
         this.playerCanv.style.translate = "";
+        setElemSize(this.playerCanv, toPixelSize(16), toPixelSize(16));
 
         this.playerSpeed = toPixelSize(80);
-        this.collisionObj = new SquareObject(toPixelSize(20), toPixelSize(16), toPixelSize(8), toPixelSize(16));
+        this.collisionObj = new SquareObject(
+            toPixelSize(20), GameVars.gameH - toPixelSize((levels[GameVars.game?.levelIndex || 0].length + 3) * 16),
+            toPixelSize(8), toPixelSize(16));
         this.fakeMovRect = new SquareObject(this.collisionObj.x, this.collisionObj.y, this.collisionObj.w, this.collisionObj.h);
 
         this.charAnim = new CharAnimation();

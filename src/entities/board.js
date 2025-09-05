@@ -48,30 +48,30 @@ export class Board {
 
     initBoardArray(levelData) {
         let newBoard = [];
-        const boardRows = levelData.length * 2;
-        for (let y = 0; y < boardRows; y++) {
+        const levelYFinish = GameVars.roomHeight - 1;
+        const levelYstart = levelYFinish - (levelData.length * 2);
+        for (let y = 0; y < GameVars.roomHeight; y++) {
             newBoard.push([]);
             for (let x = 0; x < levelData[0].length; x++) {
-                if (y % 2 === 0) {
-                    newBoard[y].push(this.retrieveBlockType(levelData[y / 2][x], x, y));
-                } else {
-                    if (y === boardRows - 1 && levelData[levelData.length - 1][x] === TileType.HOLE) {
-                        newBoard[y].push(null);
-                    } else if (y == boardRows - 1) {
-                        newBoard[y].push(new Floor(x, y));
-                    } else if (y - 1 >= 0 && !!newBoard[y - 1][x] && newBoard[y - 1][x].tileType === TileType.HOUSE_CEILING) {
-                        newBoard[y].push(new HouseBottom(x, y, y + 1 < boardRows && this.isFloor(levelData[(y + 1) / 2][x])));
+                if (y >= levelYstart && y <= levelYFinish) {
+                    let adjusedY = Math.floor(y - levelYstart);
+                    if (adjusedY % 2 === 0) {
+                        newBoard[y].push(this.retrieveBlockType(levelData[adjusedY / 2][x], x, y));
                     } else {
-                        newBoard[y].push(null);
+                        if (y === GameVars.roomHeight - 1 && levelData[levelData.length - 1][x] === TileType.HOLE) {
+                            newBoard[y].push(null);
+                        } else if (y == GameVars.roomHeight - 1) {
+                            newBoard[y].push(new Floor(x, y));
+                        } else if (y - 1 >= 0 && !!newBoard[y - 1][x] && newBoard[y - 1][x].tileType === TileType.HOUSE_CEILING) {
+                            newBoard[y].push(new HouseBottom(x, y, y + 1 < GameVars.roomHeight && this.isFloor(levelData[(adjusedY + 1) / 2][x])));
+                        } else {
+                            newBoard[y].push(null);
+                        }
                     }
+                } else {
+                    newBoard[y].push(null);
                 }
             }
-        }
-
-        // HACK add extra rows to fix game collision
-        newBoard.push([]);
-        for (let x = 0; x < levelData[0].length; x++) {
-            newBoard[newBoard.length - 1].push(null);
         }
         return newBoard;
     }
