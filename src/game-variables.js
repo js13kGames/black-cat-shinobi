@@ -1,4 +1,4 @@
-const isMobile = navigator.maxTouchPoints > 1 && navigator.maxTouchPoints !== 256;
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 const updatePixelSize = (width, height) => {
     GameVars.lastGameW = GameVars.gameW;

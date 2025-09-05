@@ -42,7 +42,7 @@ export class ActionPad {
         // this.movePadCtx.fillRect(0, 0, this.movePadCanv.width, this.movePadCanv.height);
 
         genSmallBox(this.movePadCtx, 0, 0, 19, 19, toPixelSize(1), GameVars.keys[InputKey.DOWN] ? "#ffffffaa" : "#00000066", GameVars.keys[InputKey.DOWN] ? "#ffffff66" : "#100f0f66");
-        drawSprite(this.movePadCtx, CharacterFall[0], toPixelSize(1), 3, 2, PlayerColors, true);
+        drawSprite(this.movePadCtx, CharacterFall[0], toPixelSize(1), 3, 4, PlayerColors, true);
 
         genSmallBox(this.movePadCtx, 22, 0, 19, 19, toPixelSize(1), GameVars.keys[InputKey.JUMP] ? "#ffffffaa" : "#00000066", GameVars.keys[InputKey.JUMP] ? "#ffffff66" : "#100f0f66");
         drawSprite(this.movePadCtx, CharacterJump[0], toPixelSize(1), 23, 2, PlayerColors);
