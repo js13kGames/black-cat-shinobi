@@ -34,7 +34,7 @@ export class ActionPad {
 
     update() {
         setElemSize(this.movePadCanv, toPixelSize(42), toPixelSize(20));
-        this.movePadCanv.style.translate = (GameVars.gameW - toPixelSize(42 + 12)) + 'px ' + (GameVars.gameH - toPixelSize(20 + 12)) + 'px';
+        this.movePadCanv.style.translate = (GameVars.gameW - toPixelSize(42 + 8)) + 'px ' + (GameVars.gameH - toPixelSize(20 + 8)) + 'px';
 
 
         this.movePadCtx.clearRect(0, 0, this.movePadCanv.width, this.movePadCanv.height);

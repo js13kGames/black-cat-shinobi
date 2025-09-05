@@ -35,7 +35,7 @@ export class MovePad {
 
     update() {
         setElemSize(this.movePadCanv, toPixelSize(42), toPixelSize(20));
-        this.movePadCanv.style.translate = toPixelSize(12) + 'px ' + (GameVars.gameH - this.movePadCanv.height - toPixelSize(12)) + 'px';
+        this.movePadCanv.style.translate = toPixelSize(8) + 'px ' + (GameVars.gameH - this.movePadCanv.height - toPixelSize(8)) + 'px';
 
         this.movePadCtx.clearRect(0, 0, this.movePadCanv.width, this.movePadCanv.height);
         // this.movePadCtx.fillStyle = "red";

@@ -122,8 +122,9 @@ const drawMainMenu = () => {
     drawPixelTextInCanvas("black cat", mainMenuCtx, toPixelSize(3), Math.round(GameVars.gameW / 2 / toPixelSize(3)), 4, "#9bf2fa", 1);
     drawPixelTextInCanvas("shinobi", mainMenuCtx, toPixelSize(2), Math.round(GameVars.gameW / 2 / toPixelSize(2)), 14, "#9bf2fa", 1);
 
-    genSmallBox(mainMenuCtx, -1, Math.floor(mainMenuCanv.height / toPixelSize(2)) - 8, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 17, toPixelSize(2), "#060606", "#060606");
-    drawPixelTextInCanvas("js13kgames 2025 - igor estevao", mainMenuCtx, toPixelSize(1), GameVars.gameWdAsPixels / 2, GameVars.gameHgAsPixels - 8, "#9bf2fa", 1);
+    genSmallBox(mainMenuCtx, -1, Math.floor(mainMenuCanv.height / toPixelSize(2)) - 10, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 17, toPixelSize(2), "#060606", "#060606");
+    drawPixelTextInCanvas("js13kgames 2025", mainMenuCtx, toPixelSize(1), GameVars.gameWdAsPixels / 2, GameVars.gameHgAsPixels - 14, "#9bf2fa", 1);
+    drawPixelTextInCanvas("igor estevao", mainMenuCtx, toPixelSize(1), GameVars.gameWdAsPixels / 2, GameVars.gameHgAsPixels - 6, "#9bf2fa", 1);
 
     const mainMenuBtnCtx = mainMenuBtn.getContext("2d");
     mainMenuBtn.style.translate = ((GameVars.gameW / 2) - (mainMenuBtn.width / 2)) + 'px ' + (mainMenuCanv.height - toPixelSize(36) - mainMenuBtn.height / 2) + 'px';
