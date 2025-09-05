@@ -1,0 +1,21 @@
+image: node:latest
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules/
+
+pages:
+  script:
+  - export NODE_OPTIONS=--openssl-legacy-provider
+  - npm ci
+  - npm run build
+  - mkdir .public
+  - cp dist/index.html .public
+  - cp dist/main.js .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+    - main
