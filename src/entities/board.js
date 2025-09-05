@@ -116,7 +116,7 @@ export class Board {
         moonCanvasCtx.clearRect(0, 0, this.moonCanvas.width, this.moonCanvas.height);
 
         moonCanvasCtx.fillStyle = "#030f26";
-        moonCanvasCtx.fillRect(0, 0, this.moonCanvas.width, this.moonCanvas.width);
+        moonCanvasCtx.fillRect(0, 0, this.moonCanvas.width, this.moonCanvas.height);
         const moonRadius = this.moonCanvas.height / 2 / toPixelSize(1);
         const moonX = this.moonCanvas.width / 2 / toPixelSize(2) - moonRadius + 20;
         generateSphere(moonCanvasCtx, moonX, 5, moonRadius, toPixelSize(1), "#9bf2fa");
