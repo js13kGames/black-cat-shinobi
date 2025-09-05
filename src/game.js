@@ -24,6 +24,10 @@ export class Game {
     setLevel() {
         this.board.reset(levels[this.levelIndex]);
         this.player.reset();
+
+        this.gameOverCollisionObj.y = GameVars.gameH - toPixelSize(1);
+        this.gameOverCollisionObj.w = GameVars.levelW;
+
         this.draw();
         this.gameState = GameState.RUNNING;
     }

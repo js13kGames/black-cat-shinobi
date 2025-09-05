@@ -20,24 +20,27 @@ export class Board {
     }
 
     createBackCanvas() {
+        const diff = GameVars.levelW - GameVars.gameW;
         this.moonCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH);
-        this.cloudCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.levelW / 3 * 2, GameVars.gameH / 6 * 4);
-        this.bambooCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.levelW / 6 * 5, GameVars.gameH);
+        this.cloudCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.gameW + diff / 3 * 2, GameVars.gameH / 6 * 4);
+        this.bambooCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.gameW + diff / 6 * 5, GameVars.gameH);
         this.boardCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.levelW, GameVars.gameH);
     }
 
     createFrontCanvas() {
-        this.bambooFrontCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.levelW / 3 * 4, GameVars.gameH);
+        const diff = GameVars.levelW - GameVars.gameW;
+        this.bambooFrontCanvas = createElem(GameVars.gameDiv, "canvas", null, null, GameVars.gameW + diff / 3 * 4, GameVars.gameH);
     }
 
     reset(levelData) {
         GameVars.levelW = levelData[0].length * toPixelSize(16);
 
+        const diff = GameVars.levelW - GameVars.gameW;
         setElemSize(this.moonCanvas, GameVars.gameW, GameVars.gameH);
-        setElemSize(this.cloudCanvas, GameVars.levelW / 3 * 2, GameVars.gameH / 6 * 4);
-        setElemSize(this.bambooCanvas, GameVars.levelW / 6 * 5, GameVars.gameH);
+        setElemSize(this.cloudCanvas, GameVars.gameW + diff / 3 * 2, GameVars.gameH / 6 * 4);
+        setElemSize(this.bambooCanvas, GameVars.gameW + diff / 6 * 5, GameVars.gameH);
         setElemSize(this.boardCanvas, GameVars.levelW, GameVars.gameH);
-        setElemSize(this.bambooFrontCanvas, GameVars.levelW / 3 * 4, GameVars.gameH);
+        setElemSize(this.bambooFrontCanvas, GameVars.gameW + diff / 3 * 4, GameVars.gameH);
 
         this.boardCanvas.style.translate = "";
         this.bambooCanvas.style.translate = "";
@@ -97,9 +100,9 @@ export class Board {
     }
 
     updatePos(camX) {
-        this.boardCanvas.style.translate = (camX) + 'px ' + (0) + 'px';
-        this.bambooCanvas.style.translate = (camX * (this.bambooCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (0) + 'px';
         this.cloudCanvas.style.translate = (camX * (this.cloudCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (0) + 'px';
+        this.bambooCanvas.style.translate = (camX * (this.bambooCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (0) + 'px';
+        this.boardCanvas.style.translate = (camX) + 'px ' + (0) + 'px';
         this.bambooFrontCanvas.style.translate = (camX * (this.bambooFrontCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (0) + 'px';
     }
 
