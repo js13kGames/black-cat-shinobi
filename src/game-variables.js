@@ -51,6 +51,7 @@ let fps = 60;
 let deltaTime;
 
 let movePad;
+let actionPad;
 
 let keys = {};
 
@@ -85,6 +86,7 @@ export const GameVars = {
     deltaTime,
 
     movePad,
+    actionPad,
 
     keys,
 

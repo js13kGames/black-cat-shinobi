@@ -4,6 +4,8 @@ import { Player } from "./entities/player";
 import { GameState } from "./enums/game-state";
 import { GameVars, toPixelSize } from "./game-variables";
 import { levels } from "./sprites/levels";
+import { ActionPad } from "./ui/actionpad";
+import { MovePad } from "./ui/movepad";
 import { rectCollision } from "./utilities/collision-utilities";
 
 export class Game {
@@ -14,6 +16,11 @@ export class Game {
         this.player = new Player();
         this.board.createFrontCanvas();
         this.gameOverCollisionObj = new SquareObject(0, GameVars.gameH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
+
+        if (GameVars.isMobile) {
+            GameVars.movePad = new MovePad();
+            GameVars.actionPad = new ActionPad();
+        }
 
         this.numberOfRetrys = 3;
         this.gameState = GameState.RUNNING;
@@ -30,6 +37,11 @@ export class Game {
 
         this.draw();
         this.gameState = GameState.RUNNING;
+
+        if (GameVars.isMobile) {
+            GameVars.movePad.update();
+            GameVars.actionPad.update();
+        }
     }
 
     update() {

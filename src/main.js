@@ -56,7 +56,7 @@ const addKeyListenerEvents = () => {
 
 const updateKeys = (key, isDown) => {
     const inputKey = getInputKey(key);
-    // const needsRedraw = GameVars.keys[inputKey] !== isDown;
+    inputKey === InputKey.JUMP && GameVars.keys[inputKey] !== isDown && GameVars.actionPad?.update();
     GameVars.keys[inputKey] = isDown;
 }
 
@@ -74,19 +74,19 @@ const createGameElements = () => {
 
     mainMenuDiv = createElem(mainDiv, "div");
     mainMenuCanv = createElem(mainMenuDiv, "canvas");
-    mainMenuBtn = createElem(mainMenuDiv, "canvas", null, null, null, null, false, null, () => startGame());
+    mainMenuBtn = createElem(mainMenuDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => startGame());
 
     retryMenuDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    retryMenuCanv = createElem(retryMenuDiv, "canvas");
+    retryMenuCanv = createElem(retryMenuDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
 
     nextLevelDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    nextLevelCanvas = createElem(nextLevelDiv, "canvas");
+    nextLevelCanvas = createElem(nextLevelDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
 
     gameOverDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    gameOverCanv = createElem(gameOverDiv, "canvas");
+    gameOverCanv = createElem(gameOverDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
 
     gameCompletedDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    gameCompletedCanv = createElem(gameCompletedDiv, "canvas");
+    gameCompletedCanv = createElem(gameCompletedDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
 
     drawMenus();
 }

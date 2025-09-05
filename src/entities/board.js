@@ -16,6 +16,7 @@ export class Board {
         GameVars.levelW = levelData[0].length * toPixelSize(16);
         this.gate = null;
         this.boardArray = this.initBoardArray(levelData);
+        this.floorY;
         this.createBackCanvas();
     }
 
@@ -63,8 +64,6 @@ export class Board {
                     } else {
                         if (y === GameVars.roomHeight - 1 && levelData[levelData.length - 1][x] === TileType.HOLE) {
                             newBoard[y].push(null);
-                        } else if (y == GameVars.roomHeight - 1) {
-                            newBoard[y].push(new Floor(x, y));
                         } else if (y - 1 >= 0 && !!newBoard[y - 1][x] && newBoard[y - 1][x].tileType === TileType.HOUSE_CEILING) {
                             newBoard[y].push(new HouseBottom(x, y, y + 1 < GameVars.roomHeight && this.isFloor(levelData[(adjusedY + 1) / 2][x])));
                         } else {
@@ -86,6 +85,7 @@ export class Board {
     retrieveBlockType(levelDataType, x, y) {
         switch (levelDataType) {
             case 1:
+                this.floorY = toPixelSize(y * 16);
                 return new Floor(x, y);
             case 2:
                 return new HouseCeiling(x, y);
@@ -152,14 +152,15 @@ export class Board {
         const bambooCanvasCtx = this.bambooCanvas.getContext("2d");
         bambooCanvasCtx.clearRect(0, 0, this.bambooCanvas.width, this.bambooCanvas.height);
 
+        console.log(this.floorY);
         bambooCanvasCtx.fillStyle = "#3d665f";
-        bambooCanvasCtx.fillRect(0, this.bambooCanvas.height - toPixelSize(46), this.bambooCanvas.width, toPixelSize(46));
+        bambooCanvasCtx.fillRect(0, this.floorY - toPixelSize(14), this.bambooCanvas.width, this.bambooCanvas.height);
         bambooCanvasCtx.fillStyle = "#4c7972";
-        bambooCanvasCtx.fillRect(0, this.bambooCanvas.height - toPixelSize(46), this.bambooCanvas.width, toPixelSize(1));
+        bambooCanvasCtx.fillRect(0, this.floorY - toPixelSize(14), this.bambooCanvas.width, toPixelSize(1));
         const adjustement = 24;
         for (let x = -adjustement; x < adjustement + (this.bambooCanvas.width / toPixelSize(1)); x++) {
             if (randomNumb(10) < 1) {
-                this.createBamboo(bambooCanvasCtx, Math.round(x * toPixelSize(2)), this.bambooCanvas.height - toPixelSize(45), 1, bambooBackColors);
+                this.createBamboo(bambooCanvasCtx, Math.round(x * toPixelSize(2)), this.floorY - toPixelSize(13), 1, bambooBackColors);
             }
         }
     }

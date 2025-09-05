@@ -22,7 +22,8 @@ export class Player {
 
         this.playerSpeed = toPixelSize(80);
         this.collisionObj = new SquareObject(
-            toPixelSize(20), GameVars.gameH - toPixelSize((levels[GameVars.game?.levelIndex || 0].length + 3) * 16),
+            toPixelSize(64), 
+            GameVars.gameH - toPixelSize((levels[GameVars.game?.levelIndex || 0].length + 3) * 16),
             toPixelSize(8), toPixelSize(16));
         this.fakeMovRect = new SquareObject(this.collisionObj.x, this.collisionObj.y, this.collisionObj.w, this.collisionObj.h);
 
