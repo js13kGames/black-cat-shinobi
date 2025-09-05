@@ -55,9 +55,7 @@ const addKeyListenerEvents = () => {
 }
 
 const updateKeys = (key, isDown) => {
-    const inputKey = getInputKey(key);
-    inputKey === InputKey.JUMP && GameVars.keys[inputKey] !== isDown && GameVars.actionPad?.update();
-    GameVars.keys[inputKey] = isDown;
+    GameVars.keys[getInputKey(key)] = isDown;
 }
 
 const setResize = () => {
