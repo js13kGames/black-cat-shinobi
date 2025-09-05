@@ -19,7 +19,7 @@ export class HouseCeiling {
         } else {
             this.drawMiddle(ctx);
         }
-        ctx.fillStyle = "#2f1519";
+        ctx.fillStyle = "#421a21";
         ctx.fillRect(this.collisionObj.x - toPixelSize(5), this.collisionObj.y + toPixelSize(6), toPixelSize(26), toPixelSize(4));
     }
 

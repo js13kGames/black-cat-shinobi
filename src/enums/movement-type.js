@@ -1,11 +1,13 @@
 export const InputKey = {
-    UP: "UP",
-    DOWN: "DOWN",
-    LEFT: "LEFT",
-    RIGHT: "RIGHT",
+    UP: 0,
+    DOWN: 1,
+    LEFT: 2,
+    RIGHT: 3,
 
-    JUMP: "JUMP",
-    ATK: "ATK",
+    JUMP: 4,
+    ATK: 5,
+
+    ENTER: 9
 }
 
 export const getInputKey = (key) => {
@@ -34,5 +36,9 @@ export const getInputKey = (key) => {
         case "Z":
         case "z":
             return InputKey.ATK;
+
+        case " ":
+        case "Enter":
+            return InputKey.ENTER;
     }
 }

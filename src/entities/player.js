@@ -1,6 +1,7 @@
 import { CircleObject } from "../collision-objects/circle-object";
 import { SquareObject } from "../collision-objects/square-object";
 import { AnimationType } from "../enums/animation-type";
+import { GameState } from "../enums/game-state";
 import { InputKey } from "../enums/movement-type";
 import { GameVars, toPixelSize } from "../game-variables";
 import { CharacterFrontIddle, PlayerColors } from "../sprites/character";
@@ -14,6 +15,11 @@ export class Player {
     constructor() {
         this.playerCanv = createElem(GameVars.gameDiv, "canvas", null, null, toPixelSize(16), toPixelSize(16));
         this.playerCanvCtx = this.playerCanv.getContext("2d");
+        this.reset();
+    }
+
+    reset() {
+        this.playerCanv.style.translate = "";
 
         this.playerSpeed = toPixelSize(80);
         this.collisionObj = new SquareObject(toPixelSize(20), toPixelSize(16), toPixelSize(8), toPixelSize(16));

@@ -1,22 +1,59 @@
+import { SquareObject } from "./collision-objects/square-object";
 import { Board } from "./entities/board";
 import { Player } from "./entities/player";
-import { Point } from "./entities/point";
-import { Floor } from "./entities/tiles/floor";
-import { GameVars } from "./game-variables";
-import { levelOne } from "./sprites/levels";
-import { createElem } from "./utilities/elem-utilities";
+import { GameState } from "./enums/game-state";
+import { GameVars, toPixelSize } from "./game-variables";
+import { levels } from "./sprites/levels";
+import { rectCollision } from "./utilities/collision-utilities";
 
 export class Game {
     constructor() {
         this.lastXdiff = 0;
-        this.board = new Board(levelOne);
+        this.levelIndex = 0;
+        this.board = new Board(levels[this.levelIndex]);
         this.player = new Player();
         this.board.createFrontCanvas();
+        this.gameOverCollisionObj = new SquareObject(0, GameVars.gameH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
+
+        this.numberOfRetrys = 3;
+        this.gameState = GameState.RUNNING;
+    }
+
+    setLevel() {
+        this.board.reset(levels[this.levelIndex]);
+        this.player.reset();
+        this.draw();
+        this.gameState = GameState.RUNNING;
     }
 
     update() {
-        this.player.update();
-        this.camUpdate();
+        if (this.gameState === GameState.RUNNING) {
+            if (rectCollision(this.player.collisionObj, this.gameOverCollisionObj)) {
+                this.numberOfRetrys--;
+                if (this.numberOfRetrys <= 0) {
+                    this.gameState = GameState.GAME_OVER;
+                } else {
+                    this.gameState = GameState.RETRY;
+                    setTimeout(() => {
+                        this.setLevel();
+                    }, 2000)
+                }
+            } else {
+                this.player.update();
+                this.camUpdate();
+                if (rectCollision(this.player.collisionObj, this.board.gate.collisionObj)) {
+                    this.levelIndex++;
+                    if (this.levelIndex < levels.length) {
+                        this.gameState = GameState.NEXT_LEVEL;
+                        setTimeout(() => {
+                            this.setLevel();
+                        }, 2000)
+                    } else {
+                        this.gameState = GameState.GAME_COMPLETE;
+                    }
+                }
+            }
+        }
     }
 
     camUpdate() {

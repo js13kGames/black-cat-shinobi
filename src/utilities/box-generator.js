@@ -1,4 +1,4 @@
-export const genSmallBox = (canvas, startX, startY, endX, endY, pixelSize, color, bgColor) => {
+export const genSmallBox = (ctx, startX, startY, endX, endY, pixelSize, color, bgColor) => {
     const conditionFn = (x, y, endX, endY) => {
         return (y === 0 && (x > 0 && x < endX)) ||
             (y === endY && (x > 0 && x < endX)) ||
@@ -6,9 +6,9 @@ export const genSmallBox = (canvas, startX, startY, endX, endY, pixelSize, color
             (x === endX && (y > 0 && y < endY));
     }
     if (bgColor) {
-        genetateInsideBoxColor(canvas, startX, startY, endX, endY, pixelSize, bgColor);
+        genetateInsideBoxColor(ctx, startX, startY, endX, endY, pixelSize, bgColor);
     }
-    generateBox(canvas, startX, startY, endX, endY, pixelSize, color, conditionFn);
+    generateBox(ctx, startX, startY, endX, endY, pixelSize, color, conditionFn);
 };
 
 export const generateBox = (ctx, startX, startY, endX, endY, pixelSize, color, conditionFn) => {
@@ -34,8 +34,7 @@ export const generateSphere = (ctx, startX, startY, radius, pixelSize, color) =>
     generateBox(ctx, startX, startY, startX + (radius * 2), startY + (radius * 2), pixelSize, color, conditionFn);
 };
 
-const genetateInsideBoxColor = (canvas, startX, startY, endX, endY, pixelSize, bgColor) => {
-    const ctx = canvas.getContext("2d");
+const genetateInsideBoxColor = (ctx, startX, startY, endX, endY, pixelSize, bgColor) => {
     ctx.fillStyle = bgColor;
     ctx.fillRect(
         Math.round((startX * pixelSize) + pixelSize),
