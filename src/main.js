@@ -4,7 +4,7 @@ import { Game } from "./game";
 import { convertToMapPixel, GameVars, toPixelSize } from "./game-variables";
 import { CharacterAtk, CharacterFall, CharacterFrontIddle, CharacterJump, CharacterRun, CharacterSideIddle, EnemyColors, PlayerColors, Shuriken } from "./sprites/character";
 import { generateBox, generateSphere, genSmallBox } from "./utilities/box-generator";
-import { createElem } from "./utilities/elem-utilities"
+import { createElem, setElemSize } from "./utilities/elem-utilities"
 import { randomNumb } from "./utilities/general-utilities";
 import { drawPixelTextInCanvas } from "./utilities/text";
 const { drawSprite } = require("./utilities/draw-utilities");
@@ -12,46 +12,39 @@ const { drawSprite } = require("./utilities/draw-utilities");
 let mainDiv;
 
 let mainMenuDiv;
+let mainMenuCanv;
+let mainMenuBtn;
 
 let isShowingRetry;
 let retryMenuDiv;
 let retryMenuCanv;
 
-let isShowingGameOver;
-let gameOverDiv;
-
 let isShowingNextLevel;
 let nextLevelDiv;
 let nextLevelCanvas;
 
-let isShowingGameCompleted;
+let isShowingFinishMenu;
+
+let gameOverDiv;
+let gameOverCanv;
+
 let gameCompletedDiv;
+let gameCompletedCanv;
 
 let secondsPassed;
 let oldTimeStamp;
+
+let timeoutID;
+let skipDelayDuration = 0.5;
+let skipDelayTimer = skipDelayDuration;
 
 const init = () => {
     GameVars.updatePixelSize(window.innerWidth, window.innerHeight);
 
     addKeyListenerEvents();
+    setResize();
+
     createGameElements();
-
-    // const mainDiv = document.getElementById("main");
-    // const mainMenuCanv = createElem(mainDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH, GameVars.isMobile, "#a8a8a8");
-    // const mainMenuCtx = mainMenuCanv.getContext("2d");
-
-    // drawCharacter(mainMenuCtx, 2, 0, 0, CharacterFrontIddle[0], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 0, 16, CharacterFrontIddle[1], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 16, 0, CharacterSideIddle[0], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 16, 16, CharacterSideIddle[1], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 32, 0, CharacterJump[0], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 48, 0, CharacterJump[1], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 32, 16, CharacterRun[0], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 48, 16, CharacterRun[1], PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 64, 16, CharacterAtk, PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 64, 16, CharacterAtk, PlayerColors);
-    // drawCharacter(mainMenuCtx, 2, 80, 16, Shuriken);
-
     window.requestAnimationFrame(gameLoop);
 }
 
@@ -67,23 +60,58 @@ const updateKeys = (key, isDown) => {
     GameVars.keys[inputKey] = isDown;
 }
 
+const setResize = () => {
+    window.addEventListener("resize", () => {
+        GameVars.updatePixelSize(window.innerWidth, window.innerHeight);
+        drawMenus();
+        GameVars.game && GameVars.game.setLevel();
+    });
+}
+
 const createGameElements = () => {
     mainDiv = document.getElementById("main");
     GameVars.gameDiv = createElem(mainDiv, "div");
-    createMainMenu();
-    createRetryMenu();
-    createNextLevelMenu();
-    createGameOverMenu();
-    createGameCompletedMenu();
+
+    mainMenuDiv = createElem(mainDiv, "div");
+    mainMenuCanv = createElem(mainMenuDiv, "canvas");
+    mainMenuBtn = createElem(mainMenuDiv, "canvas", null, null, null, null, false, null, () => startGame());
+
+    retryMenuDiv = createElem(mainDiv, "div", null, ["hidden"]);
+    retryMenuCanv = createElem(retryMenuDiv, "canvas");
+
+    nextLevelDiv = createElem(mainDiv, "div", null, ["hidden"]);
+    nextLevelCanvas = createElem(nextLevelDiv, "canvas");
+
+    gameOverDiv = createElem(mainDiv, "div", null, ["hidden"]);
+    gameOverCanv = createElem(gameOverDiv, "canvas");
+
+    gameCompletedDiv = createElem(mainDiv, "div", null, ["hidden"]);
+    gameCompletedCanv = createElem(gameCompletedDiv, "canvas");
+
+    drawMenus();
 }
 
-const createMainMenu = () => {
-    mainMenuDiv = createElem(mainDiv, "div");
-    const mainMenuCanv = createElem(mainMenuDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH);
-    const mainMenuCtx = mainMenuCanv.getContext("2d");
+const drawMenus = () => {
+    setElemSize(mainMenuCanv, GameVars.gameW, GameVars.gameH);
+    setElemSize(mainMenuBtn, toPixelSize(66), toPixelSize(16));
 
-    mainMenuCtx.fillStyle = "#030f26";
-    mainMenuCtx.fillRect(0, 0, mainMenuCanv.width, mainMenuCanv.height);
+    setElemSize(retryMenuCanv, GameVars.gameW, GameVars.gameH);
+
+    setElemSize(gameOverCanv, GameVars.gameW, GameVars.gameH);
+
+    setElemSize(nextLevelCanvas, GameVars.gameW, GameVars.gameH);
+
+    setElemSize(gameCompletedCanv, GameVars.gameW, GameVars.gameH);
+
+    drawMainMenu();
+    drawGameOverMenu();
+    drawGameCompletedMenu();
+}
+
+const drawMainMenu = () => {
+    const mainMenuCtx = mainMenuCanv.getContext("2d");
+    clearCanvas(mainMenuCtx, mainMenuCanv, "#030f26");
+
     const moonRadius = mainMenuCanv.height / 2 / toPixelSize(1);
     const moonX = mainMenuCanv.width / 2 / toPixelSize(2) - moonRadius + 20;
     generateSphere(mainMenuCtx, moonX + 5, 5, moonRadius, toPixelSize(1), "#9bf2fa");
@@ -99,9 +127,7 @@ const createMainMenu = () => {
     genSmallBox(mainMenuCtx, -1, Math.floor(mainMenuCanv.height / toPixelSize(2)) - 8, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 17, toPixelSize(2), "#060606", "#060606");
     drawPixelTextInCanvas("js13kgames 2025 - igor estevao", mainMenuCtx, toPixelSize(1), GameVars.gameWdAsPixels / 2, GameVars.gameHgAsPixels - 8, "#9bf2fa", 1);
 
-    const mainMenuBtn = createElem(mainMenuDiv, "canvas", null, null, toPixelSize(66), toPixelSize(16), false, null, () => startGame());
     const mainMenuBtnCtx = mainMenuBtn.getContext("2d");
-
     mainMenuBtn.style.translate = ((GameVars.gameW / 2) - (mainMenuBtn.width / 2)) + 'px ' + (mainMenuCanv.height - toPixelSize(36) - mainMenuBtn.height / 2) + 'px';
     genSmallBox(mainMenuBtnCtx, 0, 0, 32, 6, toPixelSize(2), "#060606", "#060606");
     drawPixelTextInCanvas("start game", mainMenuBtnCtx, toPixelSize(1), 32, 7, "#9bf2fa", 1);
@@ -112,29 +138,37 @@ const drawCharacter = (ctx, pixelSize, x, y, sprite, colors, isInvert) => {
     drawSprite(ctx, sprite, charPixel, x, y, colors, isInvert);
 }
 
-const createRetryMenu = () => {
-    retryMenuDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    retryMenuCanv = createElem(retryMenuDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH);
-}
-
-const createNextLevelMenu = () => {
-    nextLevelDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    nextLevelCanvas = createElem(nextLevelDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH);
-}
-
-const createGameOverMenu = () => {
-    gameOverDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    const gameOverCanv = createElem(gameOverDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH, false, "#452228dd");
+const drawGameOverMenu = () => {
     const gameOverCtx = gameOverCanv.getContext("2d");
-    drawPixelTextInCanvas("GAME OVER", gameOverCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 2, "#9bf2fa", 3);
+    clearCanvas(gameOverCtx, gameOverCanv, "#452228dd");
+    drawPixelTextInCanvas("game over", gameOverCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 2, "#9bf2fa", 3);
 }
 
-const createGameCompletedMenu = () => {
-    gameCompletedDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    const gameCompletedCanv = createElem(gameCompletedDiv, "canvas", null, null, GameVars.gameW, GameVars.gameH, false, "#030f26dd");
+const drawGameCompletedMenu = () => {
     const gameCompletedCtx = gameCompletedCanv.getContext("2d");
+    clearCanvas(gameCompletedCtx, gameCompletedCanv, "#030f26dd");
     drawPixelTextInCanvas("game completed", gameCompletedCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
     drawPixelTextInCanvas("thank you for playing", gameCompletedCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
+}
+
+const drawRetryMenu = () => {
+    const retryMenuCtx = retryMenuCanv.getContext("2d");
+    clearCanvas(retryMenuCtx, retryMenuCanv, "#452228dd");
+    drawPixelTextInCanvas("level - " + (GameVars.game?.levelIndex + 1), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
+    drawPixelTextInCanvas("lives " + (GameVars.game?.numberOfRetrys), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
+}
+
+const drawNextLevelMenu = () => {
+    const nextLevelCtx = nextLevelCanvas.getContext("2d");
+    clearCanvas(nextLevelCtx, nextLevelCanvas, "#030f26dd");
+    drawPixelTextInCanvas("level - " + GameVars.game?.levelIndex, nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
+    drawPixelTextInCanvas("completed", nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
+}
+
+const clearCanvas = (ctx, canvas, color) => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 const startGame = () => {
@@ -154,74 +188,92 @@ const gameLoop = (timeStamp) => {
         handleNextLevelScreen();
         handleGameOverScreen();
         handleGameCompletedScreen();
-
-        if (GameVars.game?.gameState === GameState.RUNNING) {
-            GameVars.game.update();
-        }
+        if (GameVars.game.gameState === GameState.RUNNING) GameVars.game.update();
+        if (GameVars.keys[InputKey.ENTER]) skipMenu();
     } else {
-        if (GameVars.keys[InputKey.ENTER]) startGame();
+        if (skipDelayTimer >= skipDelayDuration) {
+            if (GameVars.keys[InputKey.ENTER]) startGame();
+        } else {
+            skipDelayTimer += GameVars.deltaTime;
+        }
     }
     window.requestAnimationFrame(gameLoop);
 }
 
-const handleRetryScreen = () => {
-    if (GameVars.game?.gameState === GameState.RETRY && !isShowingRetry) {
-        isShowingRetry = true;
-        const retryMenuCtx = retryMenuCanv.getContext("2d");
-        retryMenuCtx.clearRect(0, 0, retryMenuCanv.width, retryMenuCanv.height);
-        retryMenuCtx.fillStyle = "#030f26dd";
-        retryMenuCtx.fillRect(0, 0, retryMenuCanv.width, retryMenuCanv.height);
-        drawPixelTextInCanvas("level " + (GameVars.game?.levelIndex + 1), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
-        drawPixelTextInCanvas("lives " + (GameVars.game?.numberOfRetrys), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
-        retryMenuDiv.classList.remove("hidden");
-    } else if (GameVars.game?.gameState !== GameState.RETRY && isShowingRetry) {
-        isShowingRetry = false;
-        retryMenuDiv.classList.add("hidden");
+const skipMenu = () => {
+    if (GameVars.game.gameState === GameState.RETRY && isShowingRetry) {
+        skipRetryScreen();
+    } else if (GameVars.game.gameState === GameState.NEXT_LEVEL && isShowingNextLevel) {
+        skipNextLevelScreen();
+    } else if (GameVars.game.gameState === GameState.GAME_OVER && isShowingFinishMenu) {
+        skipDelayTimer = 0;
+        skipFinishMenu(gameOverDiv);
+    } else if (GameVars.game.gameState === GameState.GAME_COMPLETE && isShowingFinishMenu) {
+        skipDelayTimer = 0;
+        skipFinishMenu(gameCompletedDiv);
     }
+    GameVars.game?.skip();
+}
+
+const handleRetryScreen = () => {
+    if (GameVars.game.gameState === GameState.RETRY && !isShowingRetry) {
+        isShowingRetry = true;
+        drawRetryMenu();
+        retryMenuDiv.classList.remove("hidden");
+    } else if (GameVars.game.gameState !== GameState.RETRY && isShowingRetry) {
+        skipRetryScreen();
+    }
+}
+
+const skipRetryScreen = () => {
+    isShowingRetry = false;
+    retryMenuDiv.classList.add("hidden");
 }
 
 const handleNextLevelScreen = () => {
-    if (GameVars.game?.gameState === GameState.NEXT_LEVEL && !isShowingNextLevel) {
+    if (GameVars.game.gameState === GameState.NEXT_LEVEL && !isShowingNextLevel) {
         isShowingNextLevel = true;
-        const nextLevelCtx = nextLevelCanvas.getContext("2d");
-        nextLevelCtx.clearRect(0, 0, nextLevelCanvas.width, nextLevelCanvas.height);
-        nextLevelCtx.fillStyle = "#030f26dd";
-        nextLevelCtx.fillRect(0, 0, nextLevelCanvas.width, nextLevelCanvas.height);
-        drawPixelTextInCanvas("level " + GameVars.game?.levelIndex, nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
-        drawPixelTextInCanvas("completed", nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
+        drawNextLevelMenu();
         nextLevelDiv.classList.remove("hidden");
-    } else if (GameVars.game?.gameState !== GameState.NEXT_LEVEL && isShowingNextLevel) {
-        isShowingNextLevel = false;
-        nextLevelDiv.classList.add("hidden");
+    } else if (GameVars.game.gameState !== GameState.NEXT_LEVEL && isShowingNextLevel) {
+        skipNextLevelScreen();
     }
 }
 
+const skipNextLevelScreen = () => {
+    isShowingNextLevel = false;
+    nextLevelDiv.classList.add("hidden");
+}
+
 const handleGameOverScreen = () => {
-    if (GameVars.game?.gameState === GameState.GAME_OVER && !isShowingGameOver) {
-        isShowingGameOver = true;
+    if (GameVars.game.gameState === GameState.GAME_OVER && !isShowingFinishMenu) {
+        isShowingFinishMenu = true;
         gameOverDiv.classList.remove("hidden");
-        setTimeout(() => {
-            isShowingGameOver = false;
-            mainMenuDiv.classList.remove("hidden");
-            gameOverDiv.classList.add("hidden");
-            GameVars.gameDiv.classList.add("hidden");
-            GameVars.game = null;
+        timeoutID = setTimeout(() => {
+            skipDelayTimer = skipDelayDuration;
+            skipFinishMenu(gameOverDiv);
         }, 2000)
     }
 }
 
 const handleGameCompletedScreen = () => {
-    if (GameVars.game?.gameState === GameState.GAME_COMPLETE && !isShowingGameCompleted) {
-        isShowingGameCompleted = true;
+    if (GameVars.game.gameState === GameState.GAME_COMPLETE && !isShowingFinishMenu) {
+        isShowingFinishMenu = true;
         gameCompletedDiv.classList.remove("hidden");
-        setTimeout(() => {
-            isShowingGameCompleted = false;
-            mainMenuDiv.classList.remove("hidden");
-            gameCompletedDiv.classList.add("hidden");
-            GameVars.gameDiv.classList.add("hidden");
-            GameVars.game = null;
+        timeoutID = setTimeout(() => {
+            skipDelayTimer = skipDelayDuration;
+            skipFinishMenu(gameCompletedDiv);
         }, 4000)
     }
+}
+
+const skipFinishMenu = (div) => {
+    clearTimeout(timeoutID);
+    isShowingFinishMenu = false;
+    mainMenuDiv.classList.remove("hidden");
+    div.classList.add("hidden");
+    GameVars.gameDiv.classList.add("hidden");
+    GameVars.game = null;
 }
 
 init();

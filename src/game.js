@@ -17,6 +17,8 @@ export class Game {
 
         this.numberOfRetrys = 3;
         this.gameState = GameState.RUNNING;
+
+        this.timeoutID;
     }
 
     setLevel() {
@@ -34,7 +36,7 @@ export class Game {
                     this.gameState = GameState.GAME_OVER;
                 } else {
                     this.gameState = GameState.RETRY;
-                    setTimeout(() => {
+                    this.timeoutID = setTimeout(() => {
                         this.setLevel();
                     }, 2000)
                 }
@@ -45,7 +47,7 @@ export class Game {
                     this.levelIndex++;
                     if (this.levelIndex < levels.length) {
                         this.gameState = GameState.NEXT_LEVEL;
-                        setTimeout(() => {
+                        this.timeoutID = setTimeout(() => {
                             this.setLevel();
                         }, 2000)
                     } else {
@@ -53,6 +55,13 @@ export class Game {
                     }
                 }
             }
+        }
+    }
+
+    skip() {
+        if (this.gameState === GameState.NEXT_LEVEL || this.gameState === GameState.RETRY) {
+            clearTimeout(this.timeoutID);
+            this.setLevel();
         }
     }
 

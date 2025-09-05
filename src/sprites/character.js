@@ -1,7 +1,3 @@
-const whit = "#edeef7";
-const grdk = "#38252e";
-const grmd = "#3e3846";
-
 export const EnemyColors = {
     "ey": "#ffff57",
     "sk": "#100f0f",
@@ -207,34 +203,4 @@ export const CharacterRun = [
         [null, null, "sk", null, null, null, null, null, null, null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
     ],
-];
-
-export const CharacterAtk = [
-    [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, "sk", null, null, null, null, "sk", null, null, null],
-    [null, null, null, null, null, null, null, null, "sk", "sk", null, null, "sk", "sk", null, null, null],
-    [null, null, null, null, null, null, null, null, "lc", "lc", "lc", "lc", "lc", "lc", null, null, null],
-    [null, null, null, "mc", "mc", "mc", "mc", "mc", "sk", "lc", "lc", "lc", "lc", "lc", whit, null, null],
-    [null, null, null, null, null, null, null, null, "sk", "sk", "ey", "sk", "sk", "ey", null, whit, null],
-    [null, null, null, null, null, null, null, null, "sk", "sk", "sk", "sk", "sk", "sk", null, whit, null],
-    [null, "sk", "mc", "dc", "dc", "dc", "dc", "dc", "dc", "sk", "sk", "sk", "sk", "sk", null, whit, null],
-    [null, null, whit, "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", "dc", null, whit, whit, null],
-    [null, null, null, whit, whit, "dc", "dc", "dc", "dc", "dc", "dc", "dc", null, whit, whit, null, null],
-    [null, null, null, null, null, whit, whit, whit, whit, whit, whit, whit, whit, whit, null, null, null],
-    [null, null, null, null, null, "dc", "dc", "mc", "dc", "dc", "dc", "sk", "sk", null, null, null, null],
-    [null, null, null, null, "dc", "dc", "dc", "dc", "dc", "sk", "sk", "sk", "sk", null, null, null, null],
-    [null, null, null, "dc", "dc", "dc", "dc", null, null, null, "sk", "sk", null, null, null, null, null],
-    [null, null, "mc", "mc", null, null, null, null, null, null, null, null, null, null, null, null, null],
-    [null, "sk", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-];
-
-export const Shuriken = [
-    [null, null, null, whit, null, null, null, null],
-    [null, null, null, grdk, whit, null, null, null],
-    [null, null, whit, grdk, grmd, whit, null, null],
-    [null, whit, grmd, null, null, grdk, grdk, whit],
-    [whit, grdk, grdk, null, null, grmd, whit, null],
-    [null, null, whit, grmd, grdk, whit, null, null],
-    [null, null, null, whit, grdk, null, null, null],
-    [null, null, null, null, whit, null, null, null],
 ];

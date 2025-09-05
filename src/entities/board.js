@@ -3,7 +3,7 @@ import { GameVars, toPixelSize } from "../game-variables";
 import { bambooBackColors, bambooFrontColors, leaf } from "../sprites/environment";
 import { generateBox, generateSphere } from "../utilities/box-generator";
 import { drawSprite } from "../utilities/draw-utilities";
-import { createElem } from "../utilities/elem-utilities";
+import { createElem, setElemSize } from "../utilities/elem-utilities";
 import { randomNumb, randomNumbOnRange } from "../utilities/general-utilities";
 import { Floor } from "./tiles/floor";
 import { Gate } from "./tiles/gate";
@@ -32,6 +32,13 @@ export class Board {
 
     reset(levelData) {
         GameVars.levelW = levelData[0].length * toPixelSize(16);
+
+        setElemSize(this.moonCanvas, GameVars.gameW, GameVars.gameH);
+        setElemSize(this.cloudCanvas, GameVars.levelW / 3 * 2, GameVars.gameH / 6 * 4);
+        setElemSize(this.bambooCanvas, GameVars.levelW / 6 * 5, GameVars.gameH);
+        setElemSize(this.boardCanvas, GameVars.levelW, GameVars.gameH);
+        setElemSize(this.bambooFrontCanvas, GameVars.levelW / 3 * 4, GameVars.gameH);
+
         this.boardCanvas.style.translate = "";
         this.bambooCanvas.style.translate = "";
         this.cloudCanvas.style.translate = "";

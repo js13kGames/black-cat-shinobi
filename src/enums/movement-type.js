@@ -33,10 +33,6 @@ export const getInputKey = (key) => {
         case "D":
             return InputKey.RIGHT;
 
-        case "Z":
-        case "z":
-            return InputKey.ATK;
-
         case " ":
         case "Enter":
             return InputKey.ENTER;
