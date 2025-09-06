@@ -11,11 +11,19 @@ import { rectCollision } from "./utilities/collision-utilities";
 export class Game {
     constructor() {
         this.lastXdiff = 0;
+        this.lastYdiff = 0;
+
         this.levelIndex = 0;
-        this.board = new Board(levels[this.levelIndex]);
+        this.board = new Board();
+
+        this.board.createBackCanvas();
         this.player = new Player();
         this.board.createFrontCanvas();
-        this.gameOverCollisionObj = new SquareObject(0, GameVars.gameH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
+
+        this.board.reset(levels[this.levelIndex]);
+        this.player.reset();
+
+        this.gameOverCollisionObj = new SquareObject(0, GameVars.levelH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
 
         if (GameVars.isMobile) {
             GameVars.movePad = new MovePad();
@@ -32,7 +40,7 @@ export class Game {
         this.board.reset(levels[this.levelIndex]);
         this.player.reset();
 
-        this.gameOverCollisionObj.y = GameVars.gameH - toPixelSize(1);
+        this.gameOverCollisionObj.y = GameVars.levelH - toPixelSize(1);
         this.gameOverCollisionObj.w = GameVars.levelW;
 
         this.draw();
@@ -46,31 +54,31 @@ export class Game {
 
     update() {
         if (this.gameState === GameState.RUNNING) {
-            if (rectCollision(this.player.collisionObj, this.gameOverCollisionObj)) {
-                this.numberOfRetrys--;
-                if (this.numberOfRetrys <= 0) {
-                    this.gameState = GameState.GAME_OVER;
-                } else {
-                    this.gameState = GameState.RETRY;
-                    this.timeoutID = setTimeout(() => {
-                        this.setLevel();
-                    }, 2000)
-                }
-            } else {
-                this.player.update();
-                this.camUpdate();
-                if (rectCollision(this.player.collisionObj, this.board.gate.collisionObj)) {
-                    this.levelIndex++;
-                    if (this.levelIndex < levels.length) {
-                        this.gameState = GameState.NEXT_LEVEL;
-                        this.timeoutID = setTimeout(() => {
-                            this.setLevel();
-                        }, 2000)
-                    } else {
-                        this.gameState = GameState.GAME_COMPLETE;
-                    }
-                }
-            }
+            // if (rectCollision(this.player.collisionObj, this.gameOverCollisionObj)) {
+            //     this.numberOfRetrys--;
+            //     if (this.numberOfRetrys <= 0) {
+            //         this.gameState = GameState.GAME_OVER;
+            //     } else {
+            //         this.gameState = GameState.RETRY;
+            //         this.timeoutID = setTimeout(() => {
+            //             this.setLevel();
+            //         }, 2000)
+            //     }
+            // } else {
+            this.player.update();
+            this.camUpdate();
+            //     if (rectCollision(this.player.collisionObj, this.board.gate.collisionObj)) {
+            //         this.levelIndex++;
+            //         if (this.levelIndex < levels.length) {
+            //             this.gameState = GameState.NEXT_LEVEL;
+            //             this.timeoutID = setTimeout(() => {
+            //                 this.setLevel();
+            //             }, 2000)
+            //         } else {
+            //             this.gameState = GameState.GAME_COMPLETE;
+            //         }
+            //     }
+            // }
         }
     }
 
@@ -82,13 +90,12 @@ export class Game {
     }
 
     camUpdate() {
-        if (this.player.collisionObj.x > GameVars.gameHW &&
-            this.player.collisionObj.x < GameVars.levelW - GameVars.gameHW) {
-            const newCamX = GameVars.gameHW - this.player.collisionObj.x;
-            if (this.lastXdiff !== newCamX) {
-                this.board.updatePos(newCamX);
-                this.lastXdiff = newCamX;
-            }
+        const newCamX = this.player.collisionObj.x > GameVars.gameHalfW && this.player.collisionObj.x < GameVars.levelW - GameVars.gameHalfW ? GameVars.gameHalfW - this.player.collisionObj.x : this.lastXdiff;
+        const newCamY = GameVars.gameH - GameVars.levelH + toPixelSize(16);
+        if (this.lastXdiff !== newCamX || this.lastYdiff !== newCamY) {
+            this.board.updatePos(newCamX, newCamY);
+            this.lastXdiff = newCamX;
+            this.lastYdiff = newCamY;
         }
     }
 

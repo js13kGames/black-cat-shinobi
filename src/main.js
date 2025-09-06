@@ -45,6 +45,9 @@ const init = () => {
     setResize();
 
     createGameElements();
+
+    startGame();
+
     window.requestAnimationFrame(gameLoop);
 }
 
