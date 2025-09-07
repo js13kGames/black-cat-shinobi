@@ -181,7 +181,7 @@ const startGame = () => {
 const gameLoop = (timeStamp) => {
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
-    GameVars.deltaTime = secondsPassed;
+    GameVars.deltaTime = Math.min(secondsPassed, 0.1);
     if (GameVars.game) {
         handleRetryScreen();
         handleNextLevelScreen();

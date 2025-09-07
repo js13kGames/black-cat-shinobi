@@ -19,7 +19,7 @@ export class Player {
         this.playerCanv.style.translate = "";
         setElemSize(this.playerCanv, toPixelSize(16), toPixelSize(16));
 
-        this.playerSpeed = toPixelSize(80);
+        this.playerSpeed = toPixelSize(100);
         this.collisionObj = new SquareObject(toPixelSize(32), GameVars.levelH - toPixelSize(32 + 48), toPixelSize(8), toPixelSize(16));
         this.fakeMovRect = new SquareObject(this.collisionObj.x, this.collisionObj.y, this.collisionObj.w, this.collisionObj.h);
 
@@ -61,7 +61,7 @@ export class Player {
         this.fakeMovRect.x = Math.round(this.collisionObj.x);
         this.fakeMovRect.y = Math.round(newRectY);
         if (checkForCollisions(this.collisionObj, this.fakeMovRect, (rect) => {
-            this.gravityMultiplier += 0.1;
+            this.gravityMultiplier += 6 * GameVars.deltaTime;
             if (this.gravityMultiplier > 4) this.animationType = AnimationType.FALL;
             this.move(rect);
         }, true)) {
