@@ -1,3 +1,4 @@
+import { LifeBar } from "./entities/life-bar";
 import { GameState } from "./enums/game-state";
 import { getInputKey, InputKey } from "./enums/movement-type";
 import { Game } from "./game";
@@ -18,6 +19,7 @@ let mainMenuBtn;
 let isShowingRetry;
 let retryMenuDiv;
 let retryMenuCanv;
+let retryHearts;
 
 let isShowingNextLevel;
 let nextLevelDiv;
@@ -77,6 +79,7 @@ const createGameElements = () => {
 
     retryMenuDiv = createElem(mainDiv, "div", null, ["hidden"]);
     retryMenuCanv = createElem(retryMenuDiv, "canvas", null, null, null, null, null, () => skipMenu());
+    retryHearts = new LifeBar(retryMenuDiv, 2, true);
 
     nextLevelDiv = createElem(mainDiv, "div", null, ["hidden"]);
     nextLevelCanvas = createElem(nextLevelDiv, "canvas", null, null, null, null, null, () => skipMenu());
@@ -154,7 +157,7 @@ const drawRetryMenu = () => {
     const retryMenuCtx = retryMenuCanv.getContext("2d");
     clearCanvas(retryMenuCtx, retryMenuCanv, "#452228dd");
     drawPixelTextInCanvas("level - " + (GameVars.game?.levelIndex + 1), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
-    drawPixelTextInCanvas("lives " + (GameVars.game?.numberOfRetrys), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
+    retryHearts.draw(GameVars.gameHalfW, GameVars.gameHalfH + toPixelSize(6), GameVars.game.numberOfRetrys);
 }
 
 const drawNextLevelMenu = () => {

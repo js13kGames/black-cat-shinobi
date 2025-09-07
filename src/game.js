@@ -1,5 +1,6 @@
 import { SquareObject } from "./collision-objects/square-object";
 import { Board } from "./entities/board";
+import { LifeBar } from "./entities/life-bar";
 import { Player } from "./entities/player";
 import { Point } from "./entities/point";
 import { GameState } from "./enums/game-state";
@@ -23,6 +24,9 @@ export class Game {
         this.board.reset(levels[this.levelIndex]);
         this.player.reset();
 
+        this.lifeBar = new LifeBar(GameVars.gameDiv, 1);
+        this.lifeBar.draw(toPixelSize(13.5 + 8), toPixelSize(5.5 + 8), this.numberOfRetrys);
+
         this.gameOverCollisionObj = new SquareObject(0, GameVars.levelH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
 
         if (GameVars.isMobile) {
@@ -42,6 +46,8 @@ export class Game {
 
         this.board.reset(levels[this.levelIndex]);
         this.player.reset();
+
+        this.lifeBar.draw(toPixelSize(13.5 + 8), toPixelSize(5.5 + 8), this.numberOfRetrys);
 
         this.gameOverCollisionObj.y = GameVars.levelH - toPixelSize(1);
         this.gameOverCollisionObj.w = GameVars.levelW;
