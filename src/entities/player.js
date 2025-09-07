@@ -3,7 +3,6 @@ import { AnimationType } from "../enums/animation-type";
 import { InputKey } from "../enums/movement-type";
 import { GameVars, toPixelSize } from "../game-variables";
 import { PlayerColors } from "../sprites/character";
-import { levels } from "../sprites/levels";
 import { checkForCollisions } from "../utilities/collision-utilities";
 import { drawSprite } from "../utilities/draw-utilities";
 import { createElem, setElemSize } from "../utilities/elem-utilities";
@@ -13,6 +12,9 @@ export class Player {
     constructor() {
         this.playerCanv = createElem(GameVars.gameDiv, "canvas");
         this.playerCanvCtx = this.playerCanv.getContext("2d");
+        this.playJumpSound;
+        this.playFallSound;
+        this.clearSoundDelay = 0;
     }
 
     reset() {
@@ -37,6 +39,10 @@ export class Player {
         this.charAnim.update(this.animationType, this.animationDir);
 
         this.draw();
+
+        if (this.animationType === AnimationType.RUN) GameVars.sound.walkSound();
+
+        this.clearSoundDelay += GameVars.deltaTime;
     }
 
     handleInputMov() {
@@ -51,8 +57,18 @@ export class Player {
         if (GameVars.keys[InputKey.LEFT]) { newRectX -= distance; this.animationType = AnimationType.RUN; this.animationDir = -1; }
         if (GameVars.keys[InputKey.JUMP]) { newRectY -= distance * 2; this.animationType = AnimationType.JUMP; }
 
-        this.validateMovement(this.collisionObj.x, newRectY);
-        this.validateMovement(newRectX, this.collisionObj.y);
+        if (this.collisionObj.y !== newRectY) this.validateMovement(this.collisionObj.x, newRectY);
+        if (this.collisionObj.x !== newRectX) this.validateMovement(newRectX, this.collisionObj.y);
+
+        if (!this.playJumpSound && this.animationType === AnimationType.JUMP) {
+            this.playJumpSound = true;
+            GameVars.sound.jumpSound();
+        }
+
+        if (!this.playFallSound && this.animationType === AnimationType.FALL) {
+            this.playFallSound = true;
+            GameVars.sound.fallSound();
+        }
     }
 
     handleGravity() {
@@ -65,14 +81,19 @@ export class Player {
             if (this.gravityMultiplier > 4) this.animationType = AnimationType.FALL;
             this.move(rect);
         }, true)) {
+            if (this.clearSoundDelay >= 0.2) {
+                this.clearSoundDelay = 0;
+                this.playJumpSound = false;
+                this.playFallSound = false;
+            }
             this.gravityMultiplier = 1;
         }
     }
 
-    validateMovement(x, y, ignoreCollisions) {
+    validateMovement(x, y) {
         this.fakeMovRect.x = Math.round(x);
         this.fakeMovRect.y = Math.round(y);
-        ignoreCollisions ? this.move(this.fakeMovRect) : checkForCollisions(this.collisionObj, this.fakeMovRect, (rect) => this.move(rect)) &&
+        checkForCollisions(this.collisionObj, this.fakeMovRect, (rect) => this.move(rect)) &&
             this.animationType === AnimationType.FALL && (this.animationType = AnimationType.IDDLE);
     }
 

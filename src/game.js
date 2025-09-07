@@ -66,8 +66,10 @@ export class Game {
             if (rectCollision(this.player.collisionObj, this.gameOverCollisionObj)) {
                 this.numberOfRetrys--;
                 if (this.numberOfRetrys <= 0) {
+                    GameVars.sound.playOverSound();
                     this.gameState = GameState.GAME_OVER;
                 } else {
+                    GameVars.sound.playerDeadSound();
                     this.gameState = GameState.RETRY;
                     this.timeoutID = setTimeout(() => {
                         this.setLevel();
@@ -77,6 +79,7 @@ export class Game {
                 this.player.update();
                 this.camUpdate();
                 if (rectCollision(this.player.collisionObj, this.board.gate.collisionObj)) {
+                    GameVars.sound.victorySound();
                     this.levelIndex++;
                     if (this.levelIndex < levels.length) {
                         this.gameState = GameState.NEXT_LEVEL;

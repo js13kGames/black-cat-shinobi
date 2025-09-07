@@ -3,7 +3,9 @@ import { GameState } from "./enums/game-state";
 import { getInputKey, InputKey } from "./enums/movement-type";
 import { Game } from "./game";
 import { GameVars, toPixelSize } from "./game-variables";
+import { Sound } from "./sound/sound";
 import { CharacterFall, PlayerColors } from "./sprites/character";
+import { AudioSprite, SpeakerSprite } from "./sprites/sound-sprites";
 import { generateBox, generateSphere, genSmallBox } from "./utilities/box-generator";
 import { createElem, setElemSize } from "./utilities/elem-utilities"
 import { randomNumb } from "./utilities/general-utilities";
@@ -33,6 +35,9 @@ let gameOverCanv;
 let gameCompletedDiv;
 let gameCompletedCanv;
 
+let soundBtnCanv;
+let lastSoundState;
+
 let secondsPassed;
 let oldTimeStamp = 0;
 
@@ -54,11 +59,18 @@ const init = () => {
 const addKeyListenerEvents = () => {
     window.addEventListener('keydown', (e) => updateKeys(e.key, true));
     window.addEventListener('keyup', (e) => updateKeys(e.key, false));
-    // window.addEventListener("click", (e) => initAudio());
+    window.addEventListener("click", (e) => initAudio());
 }
 
 const updateKeys = (key, isDown) => {
     GameVars.keys[getInputKey(key)] = isDown;
+}
+
+const initAudio = () => {
+    if (!GameVars.sound) {
+        GameVars.sound = new Sound();
+        GameVars.sound.initSound();
+    }
 }
 
 const setResize = () => {
@@ -90,7 +102,14 @@ const createGameElements = () => {
     gameCompletedDiv = createElem(mainDiv, "div", null, ["hidden"]);
     gameCompletedCanv = createElem(gameCompletedDiv, "canvas", null, null, null, null, null, () => skipMenu());
 
+    soundBtnCanv = createElem(mainDiv, "canvas", null, null, null, null, null, null, () => toogleSound());
+
     drawMenus();
+}
+
+const toogleSound = () => {
+    initAudio();
+    GameVars.sound?.muteMusic();
 }
 
 const drawMenus = () => {
@@ -108,6 +127,8 @@ const drawMenus = () => {
     drawMainMenu();
     drawGameOverMenu();
     drawGameCompletedMenu();
+
+    drawSoundBtn(true);
 }
 
 const drawMainMenu = () => {
@@ -167,13 +188,31 @@ const drawNextLevelMenu = () => {
     drawPixelTextInCanvas("completed", nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
 }
 
+const drawSoundBtn = (force) => {
+    let isSoundOn = GameVars.sound && GameVars.sound.isSoundOn;
+    if (force || lastSoundState !== isSoundOn) {
+        lastSoundState = isSoundOn;
+        const speakerBtnCtx = soundBtnCanv.getContext("2d");
+
+        setElemSize(soundBtnCanv, toPixelSize(18), toPixelSize(12));
+        soundBtnCanv.style.translate = (GameVars.gameW - soundBtnCanv.width - toPixelSize(8)) + 'px ' + toPixelSize(8) + 'px';
+
+        clearCanvas(speakerBtnCtx, soundBtnCanv)
+        genSmallBox(speakerBtnCtx, 0, 0, 17, 11, toPixelSize(1), isSoundOn ? "#9bf2fa" : "#00000066", isSoundOn ? "#9bf2fa66" : "#100f0f66");
+        drawSprite(speakerBtnCtx, SpeakerSprite, toPixelSize(1), 3, 3);
+        isSoundOn && drawSprite(speakerBtnCtx, AudioSprite, toPixelSize(1), 9, 1);
+    }
+}
+
 const clearCanvas = (ctx, canvas, color) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = color;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    color && ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 const startGame = () => {
+    initAudio();
+    GameVars.sound.clickSound();
     mainMenuDiv.classList.add("hidden");
     GameVars.gameDiv.classList.remove("hidden");
     GameVars.gameDiv.innerHTML = "";
@@ -185,7 +224,7 @@ const gameLoop = (timeStamp) => {
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
     GameVars.deltaTime = Math.min(secondsPassed, 0.1);
-    if (GameVars.game) {
+    if (GameVars.game && GameVars.deltaTime) {
         handleRetryScreen();
         handleNextLevelScreen();
         handleGameOverScreen();
@@ -199,6 +238,7 @@ const gameLoop = (timeStamp) => {
             skipDelayTimer += GameVars.deltaTime;
         }
     }
+    drawSoundBtn();
     window.requestAnimationFrame(gameLoop);
 }
 

@@ -16,49 +16,25 @@ export class CharAnimation {
     update(animationType, animationDir) {
         switch (animationType) {
             case AnimationType.IDDLE:
-                this.updateIddleAnim(animationDir);
+                this.updateAnim(animationDir, 0.4, CharacterSideIddle);
                 break;
             case AnimationType.RUN:
-                this.updateMovAnim(animationDir);
+                this.updateAnim(animationDir, 0.05, CharacterRun);
                 break;
             case AnimationType.JUMP:
-                this.updateJumpAnim(animationDir);
+                this.updateAnim(animationDir, 0.1, CharacterJump);
                 break;
             case AnimationType.FALL:
-                this.updatefallAnim(animationDir);
+                this.updateAnim(animationDir, 0.1, CharacterFall);
                 break;
         }
     }
 
-    updateIddleAnim(animationDir) {
-        if (this.lastDirection === animationDir && this.currentSprite === CharacterSideIddle) {
+    updateAnim(animationDir, animSpeed, sprites) {
+        if (this.lastDirection === animationDir && this.currentSprite === sprites) {
             this.updateFrame();
         } else {
-            this.resetVars(animationDir, 0.4, CharacterSideIddle);
-        }
-    }
-
-    updateMovAnim(animationDir) {
-        if (this.lastDirection === animationDir && this.currentSprite === CharacterRun) {
-            this.updateFrame();
-        } else {
-            this.resetVars(animationDir, 0.05, CharacterRun);
-        }
-    }
-
-    updateJumpAnim(animationDir) {
-        if (this.lastDirection === animationDir && this.currentSprite === CharacterJump) {
-            this.updateFrame();
-        } else {
-            this.resetVars(animationDir, 0.1, CharacterJump);
-        }
-    }
-
-    updatefallAnim(animationDir) {
-        if (this.lastDirection === animationDir && this.currentSprite === CharacterFall) {
-            this.updateFrame();
-        } else {
-            this.resetVars(animationDir, 0.1, CharacterFall);
+            this.resetVars(animationDir, animSpeed, sprites);
         }
     }
 

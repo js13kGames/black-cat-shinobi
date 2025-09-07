@@ -50,6 +50,8 @@ let gameDiv;
 
 let game;
 
+let sound;
+
 let fps = 60;
 let deltaTime;
 
@@ -86,6 +88,7 @@ export const GameVars = {
     gameDiv,
 
     game,
+    sound,
 
     fps,
     deltaTime,
