@@ -110,13 +110,20 @@ export class Board {
     }
 
     updatePos(camPos) {
-        this.cloudCanvas.style.translate = (camPos.x * (this.cloudCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' +
-            (camPos.y * (this.cloudCanvas.height - GameVars.gameH) / (GameVars.levelH - GameVars.gameH)) + 'px';
-        this.bambooCanvas.style.translate = (camPos.x * (this.bambooCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' +
-            (camPos.y * (this.bambooCanvas.height - GameVars.gameH) / (GameVars.levelH - GameVars.gameH)) + 'px';
+        this.UpdateCanvasPos(this.cloudCanvas, camPos);
+        this.UpdateCanvasPos(this.bambooCanvas, camPos);
         this.boardCanvas.style.translate = (camPos.x) + 'px ' + (camPos.y) + 'px';
-        this.bambooFrontCanvas.style.translate = (camPos.x * (this.bambooFrontCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' +
-            (camPos.y * (this.bambooFrontCanvas.height - GameVars.gameH) / (GameVars.levelH - GameVars.gameH)) + 'px';
+        this.UpdateCanvasPos(this.bambooFrontCanvas, camPos);
+    }
+
+    UpdateCanvasPos(canvas, camPos) {
+        canvas.style.translate = this.threeStepTest(camPos.x, canvas.width - GameVars.gameW, GameVars.levelW - GameVars.gameW) + 'px ' +
+            this.threeStepTest(camPos.y, canvas.height - GameVars.gameH, GameVars.levelH - GameVars.gameH) + 'px';
+    }
+
+    threeStepTest(value3, value2, value1) {
+        const result = value3 * value2 / value1;
+        return result || 0;
     }
 
     draw() {
