@@ -1,6 +1,7 @@
 import { SquareObject } from "./collision-objects/square-object";
 import { Board } from "./entities/board";
 import { Player } from "./entities/player";
+import { Point } from "./entities/point";
 import { GameState } from "./enums/game-state";
 import { GameVars, toPixelSize } from "./game-variables";
 import { levels } from "./sprites/levels";
@@ -10,12 +11,19 @@ import { rectCollision } from "./utilities/collision-utilities";
 
 export class Game {
     constructor() {
-        this.lastXdiff = 0;
+        this.camPos = new Point(0, 0);
+
         this.levelIndex = 0;
-        this.board = new Board(levels[this.levelIndex]);
+        this.board = new Board();
+
+        this.board.createBackCanvas();
         this.player = new Player();
         this.board.createFrontCanvas();
-        this.gameOverCollisionObj = new SquareObject(0, GameVars.gameH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
+
+        this.board.reset(levels[this.levelIndex]);
+        this.player.reset();
+
+        this.gameOverCollisionObj = new SquareObject(0, GameVars.levelH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
 
         if (GameVars.isMobile) {
             GameVars.movePad = new MovePad();
@@ -29,10 +37,13 @@ export class Game {
     }
 
     setLevel() {
+        this.camPos.x = 0;
+        this.camPos.y = 0;
+
         this.board.reset(levels[this.levelIndex]);
         this.player.reset();
 
-        this.gameOverCollisionObj.y = GameVars.gameH - toPixelSize(1);
+        this.gameOverCollisionObj.y = GameVars.levelH - toPixelSize(1);
         this.gameOverCollisionObj.w = GameVars.levelW;
 
         this.draw();
@@ -82,13 +93,13 @@ export class Game {
     }
 
     camUpdate() {
-        if (this.player.collisionObj.x > GameVars.gameHW &&
-            this.player.collisionObj.x < GameVars.levelW - GameVars.gameHW) {
-            const newCamX = GameVars.gameHW - this.player.collisionObj.x;
-            if (this.lastXdiff !== newCamX) {
-                this.board.updatePos(newCamX);
-                this.lastXdiff = newCamX;
-            }
+        const newCamX = this.player.collisionObj.x > GameVars.gameHalfW && this.player.collisionObj.x < GameVars.levelW - GameVars.gameHalfW ? GameVars.gameHalfW - this.player.collisionObj.x : this.camPos.x;
+        const yTarget = GameVars.gameHalfH / 2 * 3;
+        const newCamY = GameVars.gameH - GameVars.levelH + (this.player.collisionObj.y < GameVars.levelH - yTarget ? GameVars.levelH - yTarget - this.player.collisionObj.y : 0);
+        if (this.camPos.x !== newCamX || this.camPos.y !== newCamY) {
+            this.camPos.x = newCamX;
+            this.camPos.y = newCamY;
+            this.board.updatePos(this.camPos);
         }
     }
 

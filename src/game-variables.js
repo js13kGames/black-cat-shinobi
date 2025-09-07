@@ -5,8 +5,9 @@ const updatePixelSize = (width, height) => {
     GameVars.lastGameH = GameVars.gameH;
 
     GameVars.gameW = width;
-    GameVars.gameHW = width / 2;
+    GameVars.gameHalfW = width / 2;
     GameVars.gameH = height;
+    GameVars.gameHalfH = height / 2;
 
     GameVars.pixelSize = pixelCal(2, 4);
 
@@ -28,8 +29,9 @@ let lastGameW;
 let lastGameH;
 
 let gameW;
-let gameHW;
+let gameHalfW;
 let gameH;
+let gameHalfH;
 
 let pixelSize;
 
@@ -40,6 +42,7 @@ let roomWidth;
 let roomHeight;
 
 let levelW;
+let levelH;
 
 let mainDiv;
 let mainMenuDiv;
@@ -64,8 +67,9 @@ export const GameVars = {
     lastGameH,
 
     gameW,
-    gameHW,
+    gameHalfW,
     gameH,
+    gameHalfH,
 
     pixelSize,
     gameWdAsPixels,
@@ -74,6 +78,7 @@ export const GameVars = {
     roomWidth,
     roomHeight,
 
+    levelH,
     levelW,
 
     mainDiv,

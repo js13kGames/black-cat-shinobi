@@ -32,7 +32,7 @@ let gameCompletedDiv;
 let gameCompletedCanv;
 
 let secondsPassed;
-let oldTimeStamp;
+let oldTimeStamp = 0;
 
 let timeoutID;
 let skipDelayDuration = 0.5;
@@ -45,6 +45,7 @@ const init = () => {
     setResize();
 
     createGameElements();
+
     window.requestAnimationFrame(gameLoop);
 }
 
