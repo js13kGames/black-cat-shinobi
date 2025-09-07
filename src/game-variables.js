@@ -7,7 +7,7 @@ const updatePixelSize = (width, height) => {
     GameVars.gameW = width;
     GameVars.gameHalfW = width / 2;
     GameVars.gameH = height;
-    GameVars.gameHalfW = height / 2;
+    GameVars.gameHalfH = height / 2;
 
     GameVars.pixelSize = pixelCal(2, 4);
 

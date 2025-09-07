@@ -35,20 +35,19 @@ export class Board {
 
     reset(levelData) {
         this.boardW = Math.round(clamp(levelData[0].length, GameVars.roomWidth, 256));
-        this.boardH = Math.round(clamp(GameVars.roomHeight + 1, (levelData.length * 2) + 2, 64));
+        this.boardH = Math.round(clamp(GameVars.roomHeight + 3, (levelData.length * 2) + 3, 64));
 
         GameVars.levelW = this.boardW * toPixelSize(16);
         GameVars.levelH = this.boardH * toPixelSize(16);
 
-        console.log(this.boardW, this.boardH, GameVars.levelW, GameVars.levelH);
-
         const xDiff = GameVars.levelW - GameVars.gameW;
+        const yDiff = GameVars.levelH - GameVars.gameH;
 
         setElemSize(this.moonCanvas, GameVars.gameW, GameVars.gameH);
-        setElemSize(this.cloudCanvas, GameVars.gameW + xDiff / 3 * 2, GameVars.levelH / 6 * 4);
-        setElemSize(this.bambooCanvas, GameVars.gameW + xDiff / 6 * 5, GameVars.gameH);
+        setElemSize(this.cloudCanvas, GameVars.gameW + xDiff / 3 * 2, GameVars.gameH + yDiff / 3 * 2);
+        setElemSize(this.bambooCanvas, GameVars.gameW + xDiff / 6 * 5, GameVars.gameH + yDiff / 6 * 5);
         setElemSize(this.boardCanvas, GameVars.levelW, GameVars.levelH);
-        setElemSize(this.bambooFrontCanvas, GameVars.gameW + xDiff / 3 * 4, GameVars.gameH);
+        setElemSize(this.bambooFrontCanvas, GameVars.gameW + xDiff / 3 * 4, GameVars.gameH + yDiff / 3 * 4);
 
         this.boardCanvas.style.translate = "";
         this.bambooCanvas.style.translate = "";
@@ -61,22 +60,19 @@ export class Board {
     initBoardArray(levelData) {
         let newBoard = [];
         const levelDataH = levelData.length * 2;
-        const levelYFinish = this.boardH - 1;
-        const levelYstart = levelYFinish - levelDataH;
+        const levelYstart = this.boardH - levelDataH - 1;
         let index = 0;
         for (let y = 0; y < this.boardH; y++) {
             newBoard.push([]);
             for (let x = 0; x < levelData[0].length; x++) {
-                if (y >= levelYstart && y <= levelYFinish) {
+                if (y >= levelYstart) {
                     let levelDataIndex = Math.floor(index === 0 ? 0 : index / 2);
-                    console.log(index, levelDataIndex);
-                    if (index != levelDataH - 1 && index % 2 === 0) {
+                    levelDataIndex = levelDataIndex < levelData.length - 1 ? levelDataIndex : levelData.length - 1;
+                    if (index % 2 === 0) {
                         newBoard[y].push(this.retrieveBlockType(levelData[levelDataIndex][x], x, y));
                     } else {
-                        if (index === levelDataH - 1 && levelData[levelData.length - 1][x].tileType === TileType.HOLE) {
-                            newBoard[y].push(null);
-                        } else if (y - 1 >= 0 && !!newBoard[y - 1][x] && newBoard[y - 1][x].tileType === TileType.HOUSE_CEILING) {
-                            newBoard[y].push(new HouseBottom(x, y, this.isFloor(levelData[levelDataIndex + 1][x])));
+                        if (levelData[levelDataIndex][x] === TileType.HOUSE_CEILING) {
+                            newBoard[y].push(new HouseBottom(x, y, levelDataIndex + 1 === levelData.length - 1));
                         } else {
                             newBoard[y].push(null);
                         }
@@ -85,7 +81,10 @@ export class Board {
                     newBoard[y].push(null);
                 }
             }
-            if (y > levelYstart && y < levelYFinish) index++;
+            if (y >= levelYstart) {
+                index++;
+                index = index < levelDataH - 1 ? index : levelDataH - 1;
+            }
         }
         return newBoard;
     }
@@ -110,11 +109,14 @@ export class Board {
         }
     }
 
-    updatePos(camX, camY) {
-        this.cloudCanvas.style.translate = (camX * (this.cloudCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (camY) + 'px';
-        this.bambooCanvas.style.translate = (camX * (this.bambooCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (camY) + 'px';
-        this.boardCanvas.style.translate = (camX) + 'px ' + (camY) + 'px';
-        this.bambooFrontCanvas.style.translate = (camX * (this.bambooFrontCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' + (camY) + 'px';
+    updatePos(camPos) {
+        this.cloudCanvas.style.translate = (camPos.x * (this.cloudCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' +
+            (camPos.y * (this.cloudCanvas.height - GameVars.gameH) / (GameVars.levelH - GameVars.gameH)) + 'px';
+        this.bambooCanvas.style.translate = (camPos.x * (this.bambooCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' +
+            (camPos.y * (this.bambooCanvas.height - GameVars.gameH) / (GameVars.levelH - GameVars.gameH)) + 'px';
+        this.boardCanvas.style.translate = (camPos.x) + 'px ' + (camPos.y) + 'px';
+        this.bambooFrontCanvas.style.translate = (camPos.x * (this.bambooFrontCanvas.width - GameVars.gameW) / (GameVars.levelW - GameVars.gameW)) + 'px ' +
+            (camPos.y * (this.bambooFrontCanvas.height - GameVars.gameH) / (GameVars.levelH - GameVars.gameH)) + 'px';
     }
 
     draw() {
@@ -132,9 +134,10 @@ export class Board {
         moonCanvasCtx.fillStyle = "#030f26";
         moonCanvasCtx.fillRect(0, 0, this.moonCanvas.width, this.moonCanvas.height);
         const moonRadius = this.moonCanvas.height / 2 / toPixelSize(1);
-        const moonX = this.moonCanvas.width / 2 / toPixelSize(2) - moonRadius + 20;
+        const moonWidth = moonRadius / 5;
+        const moonX = this.moonCanvas.width / 2 / toPixelSize(2) - moonRadius + moonWidth;
         generateSphere(moonCanvasCtx, moonX, 5, moonRadius, toPixelSize(1), "#9bf2fa");
-        generateSphere(moonCanvasCtx, moonX - 20, 8, moonRadius - 3, toPixelSize(1), "#030f26");
+        generateSphere(moonCanvasCtx, moonX - moonWidth, 8, moonRadius - 3, toPixelSize(1), "#030f26");
         generateBox(moonCanvasCtx, 0, 0, this.moonCanvas.width / toPixelSize(1), this.moonCanvas.height / toPixelSize(1), toPixelSize(1), "#9bf2fa", () => randomNumb(1000) < 1);
     }
 
@@ -143,7 +146,7 @@ export class Board {
         cloudCtx.clearRect(0, 0, this.cloudCanvas.width, this.cloudCanvas.height);
 
         const adjustement = 24;
-        for (let y = 0; y < this.cloudCanvas.height / toPixelSize(2); y++) {
+        for (let y = 0; y < this.cloudCanvas.height / toPixelSize(4); y++) {
             for (let x = -adjustement; x < adjustement + (this.cloudCanvas.width / toPixelSize(1)); x++) {
                 if (randomNumb(1000) < 1) {
                     this.createCloud(cloudCtx, x, y, toPixelSize(2));
@@ -163,7 +166,7 @@ export class Board {
         const bambooCanvasCtx = this.bambooCanvas.getContext("2d");
         bambooCanvasCtx.clearRect(0, 0, this.bambooCanvas.width, this.bambooCanvas.height);
 
-        const floorY = this.boardCanvas.height - toPixelSize(2 * 16);
+        const floorY = this.boardCanvas.height - toPixelSize(56);
         bambooCanvasCtx.fillStyle = "#3d665f";
         bambooCanvasCtx.fillRect(0, floorY - toPixelSize(14), this.bambooCanvas.width, this.bambooCanvas.height);
         bambooCanvasCtx.fillStyle = "#4c7972";
@@ -181,7 +184,7 @@ export class Board {
         boardCanvasCtx.clearRect(0, 0, this.boardCanvas.width, this.boardCanvas.height);
 
         boardCanvasCtx.fillStyle = "#3d665f";
-        boardCanvasCtx.fillRect(0, this.boardCanvas.height - toPixelSize(16), this.boardCanvas.width, toPixelSize(16));
+        boardCanvasCtx.fillRect(0, this.boardCanvas.height - toPixelSize(16 * 3), this.boardCanvas.width, toPixelSize(16 * 3));
         this.boardArray.forEach(row => row.forEach(block => block?.draw(boardCanvasCtx)));
     }
 
@@ -191,8 +194,8 @@ export class Board {
 
         const adjustement = 24;
         for (let x = adjustement; x < adjustement + (this.bambooFrontCanvas.width / toPixelSize(1)); x++) {
-            if (randomNumb(100) < 10) {
-                this.createBamboo(bambooFrontCanvasCtx, Math.round(x * toPixelSize(2)), this.bambooFrontCanvas.height + toPixelSize(48), 2, bambooFrontColors);
+            if (randomNumb(100) < 8) {
+                this.createBamboo(bambooFrontCanvasCtx, Math.round(x * toPixelSize(2)), this.bambooFrontCanvas.height + toPixelSize(32), 2, bambooFrontColors);
             }
         }
     }
