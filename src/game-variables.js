@@ -1,5 +1,3 @@
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
 const updatePixelSize = (width, height) => {
     GameVars.lastGameW = GameVars.gameW;
     GameVars.lastGameH = GameVars.gameH;
@@ -24,6 +22,8 @@ const pixelCal = (min, max) => {
     let pixelSize = hgPixelSize < wdPixelSize ? hgPixelSize : wdPixelSize;
     return pixelSize >= 1 ? pixelSize + 2 : 1;
 };
+
+let isMobile;
 
 let lastGameW;
 let lastGameH;

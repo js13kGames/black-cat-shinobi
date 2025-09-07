@@ -73,19 +73,19 @@ const createGameElements = () => {
 
     mainMenuDiv = createElem(mainDiv, "div");
     mainMenuCanv = createElem(mainMenuDiv, "canvas");
-    mainMenuBtn = createElem(mainMenuDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => startGame());
+    mainMenuBtn = createElem(mainMenuDiv, "canvas", null, null, null, null, null, () => startGame());
 
     retryMenuDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    retryMenuCanv = createElem(retryMenuDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
+    retryMenuCanv = createElem(retryMenuDiv, "canvas", null, null, null, null, null, () => skipMenu());
 
     nextLevelDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    nextLevelCanvas = createElem(nextLevelDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
+    nextLevelCanvas = createElem(nextLevelDiv, "canvas", null, null, null, null, null, () => skipMenu());
 
     gameOverDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    gameOverCanv = createElem(gameOverDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
+    gameOverCanv = createElem(gameOverDiv, "canvas", null, null, null, null, null, () => skipMenu());
 
     gameCompletedDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    gameCompletedCanv = createElem(gameCompletedDiv, "canvas", null, null, null, null, GameVars.isMobile, null, () => skipMenu());
+    gameCompletedCanv = createElem(gameCompletedDiv, "canvas", null, null, null, null, null, () => skipMenu());
 
     drawMenus();
 }
