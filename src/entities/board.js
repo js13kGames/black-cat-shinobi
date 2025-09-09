@@ -191,7 +191,7 @@ export class Board {
         cloudCtx.clearRect(0, 0, this.cloudCanvas.width, this.cloudCanvas.height);
 
         const adjustement = 24;
-        for (let y = 0; y < this.cloudCanvas.height / toPixelSize(4); y++) {
+        for (let y = 0; y < this.cloudCanvas.height / toPixelSize(2) - 56; y++) {
             for (let x = -adjustement; x < adjustement + (this.cloudCanvas.width / toPixelSize(1)); x++) {
                 if (randomNumb(1000) < 1) {
                     this.createCloud(cloudCtx, x, y, toPixelSize(2));
