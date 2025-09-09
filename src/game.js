@@ -68,11 +68,17 @@ export class Game {
 
     resetLevelInfo() {
         const levelInfoCtx = this.levelInfoCanvas.getContext("2d");
-        setElemSize(this.levelInfoCanvas, toPixelSize(48), toPixelSize(12));
+        const isNewRecord = GameVars.score > GameVars.highScore;
+        setElemSize(this.levelInfoCanvas, toPixelSize(isNewRecord ? 56 : 48), toPixelSize(isNewRecord ? 18 : 12));
         this.levelInfoCanvas.style.translate = Math.round(GameVars.gameW / 2 - this.levelInfoCanvas.width / 2) + 'px ' + (toPixelSize(8)) + 'px';
         levelInfoCtx.clearRect(0, 0, this.levelInfoCanvas.width, this.levelInfoCanvas.height);
         genSmallBox(levelInfoCtx, 0, 0, Math.floor(this.levelInfoCanvas.width / toPixelSize(1)) - 1, Math.floor(this.levelInfoCanvas.height / toPixelSize(1)) - 1, toPixelSize(1), "#030f2666", "#030f2666");
-        drawPixelTextInCanvas("level - " + (this.levelIndex + 1), levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), this.levelInfoCanvas.height / toPixelSize(2), "#9bf2fa", 1);
+        if (isNewRecord) {
+            drawPixelTextInCanvas("new record!", levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), 5, "#9bf2fa", 1);
+            drawPixelTextInCanvas("level - " + (this.levelIndex + 1), levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), 13, "#9bf2fa", 1);
+        } else {
+            drawPixelTextInCanvas("level - " + (this.levelIndex + 1), levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), this.levelInfoCanvas.height / toPixelSize(2), "#9bf2fa", 1);
+        }
     }
 
     update() {

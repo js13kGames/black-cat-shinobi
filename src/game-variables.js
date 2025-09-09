@@ -1,3 +1,8 @@
+const storeId = 'igorfie-black-cat-shinobi';
+
+let highScore = parseInt(localStorage.getItem(storeId)) || 0;
+let score;
+
 const updatePixelSize = (width, height) => {
     GameVars.lastGameW = GameVars.gameW;
     GameVars.lastGameH = GameVars.gameH;
@@ -63,6 +68,10 @@ let keys = {};
 let gravity = 0.5;
 
 export const GameVars = {
+    storeId,
+    highScore,
+    score,
+
     isMobile,
 
     lastGameW,

@@ -5,6 +5,7 @@ import { Game } from "./game";
 import { GameVars, toPixelSize } from "./game-variables";
 import { Sound } from "./sound/sound";
 import { CharacterFall, PlayerColors } from "./sprites/character";
+import { levels } from "./sprites/levels";
 import { AudioSprite, SpeakerSprite } from "./sprites/sound-sprites";
 import { generateBox, generateSphere, genSmallBox } from "./utilities/box-generator";
 import { createElem, setElemSize } from "./utilities/elem-utilities"
@@ -37,6 +38,8 @@ let gameCompletedCanv;
 
 let soundBtnCanv;
 let lastSoundState;
+
+let lastScore = 0;
 
 let secondsPassed;
 let oldTimeStamp = 0;
@@ -143,7 +146,14 @@ const drawMainMenu = () => {
 
     drawCharacter(mainMenuCtx, 2, Math.round(mainMenuCanv.width / 2 / toPixelSize(2)) - CharacterFall[0][0].length / 2, Math.round(mainMenuCanv.height / 2 / toPixelSize(2)) - CharacterFall[0].length / 2, CharacterFall[0], PlayerColors);
 
-    genSmallBox(mainMenuCtx, -1, -1, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 19, toPixelSize(2), "#060606", "#060606");
+
+    if (GameVars.highScore) {
+        genSmallBox(mainMenuCtx, -1, -1, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 24, toPixelSize(2), "#060606", "#060606");
+        drawPixelTextInCanvas(GameVars.highScore === levels.length ? "game completed" : "top level - " + GameVars.highScore, mainMenuCtx, toPixelSize(1), Math.round(GameVars.gameW / 2 / toPixelSize(1)), 42, "#9bf2fa", 1);
+    } else {
+        genSmallBox(mainMenuCtx, -1, -1, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 19, toPixelSize(2), "#060606", "#060606");
+    }
+
     drawPixelTextInCanvas("black cat", mainMenuCtx, toPixelSize(3), Math.round(GameVars.gameW / 2 / toPixelSize(3)), 4, "#9bf2fa", 1);
     drawPixelTextInCanvas("shinobi", mainMenuCtx, toPixelSize(2), Math.round(GameVars.gameW / 2 / toPixelSize(2)), 14, "#9bf2fa", 1);
 
@@ -277,6 +287,7 @@ const skipRetryScreen = () => {
 const handleNextLevelScreen = () => {
     if (GameVars.game.gameState === GameState.NEXT_LEVEL && !isShowingNextLevel) {
         isShowingNextLevel = true;
+        updateScore();
         drawNextLevelMenu();
         nextLevelDiv.classList.remove("hidden");
     } else if (GameVars.game.gameState !== GameState.NEXT_LEVEL && isShowingNextLevel) {
@@ -303,6 +314,7 @@ const handleGameOverScreen = () => {
 const handleGameCompletedScreen = () => {
     if (GameVars.game.gameState === GameState.GAME_COMPLETE && !isShowingFinishMenu) {
         isShowingFinishMenu = true;
+        updateScore();
         gameCompletedDiv.classList.remove("hidden");
         timeoutID = setTimeout(() => {
             skipDelayTimer = skipDelayDuration;
@@ -313,11 +325,26 @@ const handleGameCompletedScreen = () => {
 
 const skipFinishMenu = (div) => {
     clearTimeout(timeoutID);
+    updateHighScore();
+    drawMainMenu();
+    lastScore = 0;
     isShowingFinishMenu = false;
     mainMenuDiv.classList.remove("hidden");
     div.classList.add("hidden");
     GameVars.gameDiv.classList.add("hidden");
     GameVars.game = null;
+}
+
+const updateScore = () => {
+    lastScore = GameVars.score;
+    GameVars.score = GameVars.game.levelIndex + 1;
+}
+
+const updateHighScore = () => {
+    if (GameVars.highScore < GameVars.score) {
+        GameVars.highScore = GameVars.score;
+        localStorage.setItem(GameVars.storeId, GameVars.highScore);
+    }
 }
 
 init();
