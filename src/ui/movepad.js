@@ -34,17 +34,17 @@ export class MovePad {
     }
 
     update() {
-        setElemSize(this.movePadCanv, toPixelSize(42), toPixelSize(20));
-        this.movePadCanv.style.translate = toPixelSize(8) + 'px ' + (GameVars.gameH - this.movePadCanv.height - toPixelSize(8)) + 'px';
+        setElemSize(this.movePadCanv, toPixelSize(58), toPixelSize(36));
+        this.movePadCanv.style.translate = (0) + 'px ' + (GameVars.gameH - this.movePadCanv.height) + 'px';
 
         this.movePadCtx.clearRect(0, 0, this.movePadCanv.width, this.movePadCanv.height);
         // this.movePadCtx.fillStyle = "red";
         // this.movePadCtx.fillRect(0, 0, this.movePadCanv.width, this.movePadCanv.height);
 
-        genSmallBox(this.movePadCtx, 0, 0, 19, 19, toPixelSize(1), GameVars.keys[InputKey.LEFT] ? "#ffffffaa" : "#00000066", GameVars.keys[InputKey.LEFT] ? "#ffffff66" : "#100f0f66");
-        drawSprite(this.movePadCtx, CharacterRun[0], toPixelSize(1), 1, 2, PlayerColors, true);
+        genSmallBox(this.movePadCtx, 8, 8, 19, 19, toPixelSize(1), GameVars.keys[InputKey.LEFT] ? "#ffffffaa" : "#00000066", GameVars.keys[InputKey.LEFT] ? "#ffffff66" : "#100f0f66");
+        drawSprite(this.movePadCtx, CharacterRun[0], toPixelSize(1), 9, 10, PlayerColors, true);
 
-        genSmallBox(this.movePadCtx, 22, 0, 19, 19, toPixelSize(1), GameVars.keys[InputKey.RIGHT] ? "#ffffffaa" : "#00000066", GameVars.keys[InputKey.RIGHT] ? "#ffffff66" : "#100f0f66");
-        drawSprite(this.movePadCtx, CharacterRun[0], toPixelSize(1), 25, 2, PlayerColors);
+        genSmallBox(this.movePadCtx, 30, 8, 19, 19, toPixelSize(1), GameVars.keys[InputKey.RIGHT] ? "#ffffffaa" : "#00000066", GameVars.keys[InputKey.RIGHT] ? "#ffffff66" : "#100f0f66");
+        drawSprite(this.movePadCtx, CharacterRun[0], toPixelSize(1), 33, 10, PlayerColors);
     }
 }
