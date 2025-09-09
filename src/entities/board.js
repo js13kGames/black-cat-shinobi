@@ -11,6 +11,8 @@ import { Gate } from "./tiles/gate";
 import { Hole } from "./tiles/hole";
 import { HouseBottom } from "./tiles/house-bottom";
 import { HouseCeiling } from "./tiles/house-ceiling";
+import { Spikes } from "./tiles/spikes";
+import { Stone } from "./tiles/stone";
 
 export class Board {
     constructor() {
@@ -33,7 +35,7 @@ export class Board {
         this.bambooFrontCanvas = createElem(GameVars.gameDiv, "canvas");
     }
 
-    reset(levelData) {
+    reset(levelData, player) {
         this.boardW = Math.round(clamp(levelData[0].length, GameVars.roomWidth, 256));
         this.boardH = Math.round(clamp(GameVars.roomHeight + 3, (levelData.length * 2) + 3, 64));
 
@@ -54,10 +56,10 @@ export class Board {
         this.cloudCanvas.style.translate = "";
         this.bambooFrontCanvas.style.translate = "";
 
-        this.boardArray = this.initBoardArray(levelData);
+        this.boardArray = this.initBoardArray(levelData, player);
     }
 
-    initBoardArray(levelData) {
+    initBoardArray(levelData, player) {
         let newBoard = [];
         const levelDataH = levelData.length * 2;
         const levelYstart = this.boardH - levelDataH - 1;
@@ -69,10 +71,31 @@ export class Board {
                     let levelDataIndex = Math.floor(index === 0 ? 0 : index / 2);
                     levelDataIndex = levelDataIndex < levelData.length - 1 ? levelDataIndex : levelData.length - 1;
                     if (index % 2 === 0) {
-                        newBoard[y].push(this.retrieveBlockType(levelData[levelDataIndex][x], x, y));
+                        if (levelDataIndex > 0 && levelData[levelDataIndex][x] === TileType.FLOOR && levelData[levelDataIndex - 1][x] === TileType.FLOOR) {
+                            newBoard[y].push(new Floor(x, y, true));
+                        } else {
+                            newBoard[y].push(this.retrieveBlockType(levelData[levelDataIndex][x], x, y, player));
+                        }
                     } else {
-                        if (levelData[levelDataIndex][x] === TileType.HOUSE_CEILING) {
+                        if (levelData[levelDataIndex][x] === TileType.SPIKES) {
+                            if (y >= this.boardH - 2) {
+                                if (y === this.boardH - 2) newBoard[y - 1][x] = new Hole(x, y - 1);
+                                newBoard[y].push(new Spikes(x, y));
+                            } else if (levelDataIndex + 1 < levelData.length && levelData[levelDataIndex + 1][x] !== TileType.EMPTY && levelData[levelDataIndex + 1][x] !== TileType.SPIKES) {
+                                newBoard[y].push(new Spikes(x, y));
+                            } else if (levelDataIndex - 1 >= 0 && levelData[levelDataIndex - 1][x] !== TileType.EMPTY && levelData[levelDataIndex - 1][x] !== TileType.SPIKES) {
+                                newBoard[y].push(new Spikes(x, y - 1, true));
+                            } else if (x - 1 >= 0 && levelData[levelDataIndex][x - 1] !== TileType.EMPTY) {
+                                newBoard[y].push(new Spikes(x, y, true, true));
+                            } else if (x + 1 < levelData[0].length - 1 && levelData[levelDataIndex][x + 1] !== TileType.EMPTY) {
+                                newBoard[y].push(new Spikes(x, y, false, true));
+                            } else {
+                                newBoard[y].push(new Spikes(x, y));
+                            }
+                        } else if (levelData[levelDataIndex][x] === TileType.HOUSE_CEILING) {
                             newBoard[y].push(new HouseBottom(x, y, levelDataIndex + 1 === levelData.length - 1));
+                        } else if ((levelData[levelDataIndex][x] === TileType.STONE || levelData[levelDataIndex][x] === TileType.FLOOR) && levelDataIndex !== levelData.length - 1) {
+                            newBoard[y].push(this.retrieveBlockType(levelData[levelDataIndex][x], x, y));
                         } else {
                             newBoard[y].push(null);
                         }
@@ -93,15 +116,20 @@ export class Board {
         return tileType === TileType.FLOOR || tileType === TileType.HOLE;
     }
 
-    retrieveBlockType(levelDataType, x, y) {
+    retrieveBlockType(levelDataType, x, y, player) {
         switch (levelDataType) {
-            case 1:
-                return new Floor(x, y);
-            case 2:
+            case TileType.FLOOR:
+                return new Floor(x, y, y < this.boardH - 3);
+            case TileType.HOUSE_CEILING:
                 return new HouseCeiling(x, y);
-            case 4:
+            case TileType.HOLE:
                 return new Hole(x, y);
-            case 9:
+            case TileType.STONE:
+                return new Stone(x, y);
+            case TileType.PLAYER:
+                player.reset(x, y);
+                return null;
+            case TileType.GATE:
                 this.gate = new Gate(x, y);
                 return this.gate;
             default:
@@ -173,7 +201,7 @@ export class Board {
         const bambooCanvasCtx = this.bambooCanvas.getContext("2d");
         bambooCanvasCtx.clearRect(0, 0, this.bambooCanvas.width, this.bambooCanvas.height);
 
-        const floorY = this.boardCanvas.height - toPixelSize(56);
+        const floorY = this.bambooCanvas.height - toPixelSize(48);
         bambooCanvasCtx.fillStyle = "#3d665f";
         bambooCanvasCtx.fillRect(0, floorY - toPixelSize(14), this.bambooCanvas.width, this.bambooCanvas.height);
         bambooCanvasCtx.fillStyle = "#4c7972";

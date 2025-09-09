@@ -25,9 +25,9 @@ export class HouseBottom {
 
     drawLeft(ctx) {
         ctx.fillStyle = "#35555c";
-        ctx.fillRect(this.collisionObj.x + toPixelSize(4), this.collisionObj.y, toPixelSize(15), toPixelSize(16));
+        ctx.fillRect(this.collisionObj.x + toPixelSize(4), this.collisionObj.y, toPixelSize(12), toPixelSize(16));
         ctx.fillStyle = "#272538";
-        ctx.fillRect(this.collisionObj.x + toPixelSize(4), this.collisionObj.y + toPixelSize(12), toPixelSize(15), toPixelSize(2));
+        ctx.fillRect(this.collisionObj.x + toPixelSize(4), this.collisionObj.y + toPixelSize(12), toPixelSize(12), toPixelSize(2));
         ctx.fillRect(this.collisionObj.x + toPixelSize(4), this.collisionObj.y, toPixelSize(2), toPixelSize(16));
         ctx.fillStyle = "#100f0f";
         ctx.fillRect(this.collisionObj.x + toPixelSize(6), this.collisionObj.y, toPixelSize(1), toPixelSize(16));

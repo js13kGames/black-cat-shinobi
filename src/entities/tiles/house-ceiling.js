@@ -19,8 +19,6 @@ export class HouseCeiling {
         } else {
             this.drawMiddle(ctx);
         }
-        ctx.fillStyle = "#421a21";
-        ctx.fillRect(this.collisionObj.x - toPixelSize(5), this.collisionObj.y + toPixelSize(6), toPixelSize(26), toPixelSize(4));
     }
 
     drawLeft(ctx) {
@@ -41,6 +39,9 @@ export class HouseCeiling {
         ctx.fillRect(this.collisionObj.x + toPixelSize(1), this.collisionObj.y + toPixelSize(12), toPixelSize(16), toPixelSize(2));
 
         this.createLight(ctx, this.collisionObj.x - toPixelSize(2), this.collisionObj.y + toPixelSize(10));
+
+        ctx.fillStyle = "#421a21";
+        ctx.fillRect(this.collisionObj.x - toPixelSize(5), this.collisionObj.y + toPixelSize(6), toPixelSize(26), toPixelSize(4));
     }
 
     drawMiddle(ctx) {
@@ -56,6 +57,9 @@ export class HouseCeiling {
         ctx.fillRect(this.collisionObj.x, this.collisionObj.y + toPixelSize(14), toPixelSize(16), toPixelSize(1));
         ctx.fillStyle = "#2f1519";
         ctx.fillRect(this.collisionObj.x, this.collisionObj.y + toPixelSize(12), toPixelSize(16), toPixelSize(2));
+
+        ctx.fillStyle = "#421a21";
+        ctx.fillRect(this.collisionObj.x, this.collisionObj.y + toPixelSize(6), toPixelSize(16), toPixelSize(4));
     }
 
     drawRight(ctx) {
@@ -76,6 +80,9 @@ export class HouseCeiling {
         ctx.fillRect(this.collisionObj.x, this.collisionObj.y + toPixelSize(12), toPixelSize(14), toPixelSize(2));
 
         this.createLight(ctx, this.collisionObj.x + toPixelSize(16), this.collisionObj.y + toPixelSize(10));
+
+        ctx.fillStyle = "#421a21";
+        ctx.fillRect(this.collisionObj.x, this.collisionObj.y + toPixelSize(6), toPixelSize(21), toPixelSize(4));
     }
 
     createLight(ctx, x, y) {

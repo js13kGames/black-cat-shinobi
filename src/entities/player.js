@@ -1,6 +1,7 @@
 import { SquareObject } from "../collision-objects/square-object";
 import { AnimationType } from "../enums/animation-type";
 import { InputKey } from "../enums/movement-type";
+import { TileType } from "../enums/tile-type";
 import { GameVars, toPixelSize } from "../game-variables";
 import { PlayerColors } from "../sprites/character";
 import { checkForCollisions } from "../utilities/collision-utilities";
@@ -17,12 +18,12 @@ export class Player {
         this.clearSoundDelay = 0;
     }
 
-    reset() {
+    reset(x, y) {
         this.playerCanv.style.translate = "";
         setElemSize(this.playerCanv, toPixelSize(16), toPixelSize(16));
 
         this.playerSpeed = toPixelSize(100);
-        this.collisionObj = new SquareObject(toPixelSize(32), GameVars.levelH - toPixelSize(32 + 48), toPixelSize(8), toPixelSize(16));
+        this.collisionObj = new SquareObject(toPixelSize(x * 16), toPixelSize((y * 16) - 32), toPixelSize(8), toPixelSize(8));
         this.fakeMovRect = new SquareObject(this.collisionObj.x, this.collisionObj.y, this.collisionObj.w, this.collisionObj.h);
 
         this.charAnim = new CharAnimation();
@@ -35,12 +36,14 @@ export class Player {
     update() {
         this.handleInputMov();
         this.handleGravity();
+        this.sideWallJump();
 
         this.charAnim.update(this.animationType, this.animationDir);
 
         this.draw();
 
         if (this.animationType === AnimationType.RUN) GameVars.sound.walkSound();
+
 
         this.clearSoundDelay += GameVars.deltaTime;
     }
@@ -90,6 +93,33 @@ export class Player {
         }
     }
 
+    sideWallJump() {
+        if (this.animationType !== AnimationType.JUMP && GameVars.keys[InputKey.JUMP]) {
+            let newRectX = this.collisionObj.x;
+
+            const distance = this.playerSpeed * GameVars.deltaTime;
+            if (GameVars.keys[InputKey.RIGHT]) { newRectX += distance; this.animationDir = 1; }
+            if (GameVars.keys[InputKey.LEFT]) { newRectX -= distance; this.animationDir = -1; }
+
+            this.fakeMovRect.x = Math.round(newRectX);
+            this.fakeMovRect.y = this.collisionObj.y;
+
+            if (checkForCollisions(this.collisionObj, this.fakeMovRect, () => { }) === TileType.STONE) {
+                this.animationType === AnimationType.JUMP;
+                this.resetGravity();
+            }
+        }
+    }
+
+    resetGravity() {
+        if (this.clearSoundDelay >= 0.2) {
+            this.clearSoundDelay = 0;
+            this.playJumpSound = false;
+            this.playFallSound = false;
+        }
+        this.gravityMultiplier = 1;
+    }
+
     validateMovement(x, y) {
         this.fakeMovRect.x = Math.round(x);
         this.fakeMovRect.y = Math.round(y);
@@ -106,13 +136,13 @@ export class Player {
 
         let drawY = this.collisionObj.y + GameVars.game.camPos.y;
 
-        this.playerCanv.style.translate = (drawX - toPixelSize(4)) + 'px ' + (drawY + toPixelSize(4)) + 'px';
+        this.playerCanv.style.translate = (drawX - toPixelSize(4)) + 'px ' + (drawY - toPixelSize(4)) + 'px';
     }
 
     draw() {
         this.playerCanvCtx.clearRect(0, 0, this.playerCanv.width, this.playerCanv.height);
         // this.playerCanvCtx.fillStyle = "red";
-        // this.playerCanvCtx.fillRect(toPixelSize(4), 0, this.collisionObj.w, this.collisionObj.h);
+        // this.playerCanvCtx.fillRect(toPixelSize(4), toPixelSize(0), this.collisionObj.w, this.collisionObj.h);
         drawSprite(this.playerCanvCtx, this.charAnim.getSpriteToDraw(), toPixelSize(1), 0, 0, PlayerColors, this.charAnim.isInverted);
     }
 }

@@ -37,8 +37,8 @@ export const checkForCollisions = (originalRect, fakeMovRect, fn, isGravity) => 
     const boardX = Math.round((fakeMovRect.x + (fakeMovRect.w / 2)) / toPixelSize(16));
     const boardY = Math.round((fakeMovRect.y + (fakeMovRect.h / 2)) / toPixelSize(16));
     const board = GameVars.game.board.boardArray;
-    if (boardX <= 0 || boardX >= board[0].length) return true;
-    if (boardY < -1) return false;
+    if (boardX <= 0 || boardX >= board[0].length) return TileType.FLOOR;
+    if (boardY < -1) return TileType.EMPTY;
     for (let y = clamp(boardY - 1, 0, board.length - 1); y <= clamp(boardY + 1, 0, board.length - 1); y++) {
         for (let x = clamp(boardX - 1, 0, board[0].length - 1); x <= clamp(boardX + 1, 0, board[0].length - 1); x++) {
             if (!!board[y][x] && board[y][x].isCollidable && rectCollision(fakeMovRect, board[y][x].collisionObj)) {
@@ -51,12 +51,13 @@ export const checkForCollisions = (originalRect, fakeMovRect, fn, isGravity) => 
                         continue;
                     }
                 }
-                return true;
+                if (board[y][x].tileType === TileType.SPIKES) GameVars.game.takeDamage();
+                return board[y][x].tileType;
             }
         }
     }
     fn(fakeMovRect);
-    return false;
+    return TileType.EMPTY;
 }
 
 export const clamp = (number, min, max) => {

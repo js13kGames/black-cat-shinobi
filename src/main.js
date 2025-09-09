@@ -170,7 +170,7 @@ const drawGameOverMenu = () => {
 const drawGameCompletedMenu = () => {
     const gameCompletedCtx = gameCompletedCanv.getContext("2d");
     clearCanvas(gameCompletedCtx, gameCompletedCanv, "#030f26dd");
-    drawPixelTextInCanvas("game completed", gameCompletedCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
+    drawPixelTextInCanvas("completed", gameCompletedCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
     drawPixelTextInCanvas("thank you for playing", gameCompletedCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
 }
 
@@ -198,7 +198,7 @@ const drawSoundBtn = (force) => {
         soundBtnCanv.style.translate = (GameVars.gameW - soundBtnCanv.width - toPixelSize(8)) + 'px ' + toPixelSize(8) + 'px';
 
         clearCanvas(speakerBtnCtx, soundBtnCanv)
-        genSmallBox(speakerBtnCtx, 0, 0, 17, 11, toPixelSize(1), isSoundOn ? "#9bf2fa" : "#00000066", isSoundOn ? "#9bf2fa66" : "#100f0f66");
+        genSmallBox(speakerBtnCtx, 0, 0, 17, 11, toPixelSize(1), "#030f2666", "#030f2666");
         drawSprite(speakerBtnCtx, SpeakerSprite, toPixelSize(1), 3, 3);
         isSoundOn && drawSprite(speakerBtnCtx, AudioSprite, toPixelSize(1), 9, 1);
     }
@@ -224,13 +224,15 @@ const gameLoop = (timeStamp) => {
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
     GameVars.deltaTime = Math.min(secondsPassed, 0.1);
-    if (GameVars.game && GameVars.deltaTime) {
-        handleRetryScreen();
-        handleNextLevelScreen();
-        handleGameOverScreen();
-        handleGameCompletedScreen();
-        if (GameVars.game.gameState === GameState.RUNNING) GameVars.game.update();
-        if (GameVars.keys[InputKey.ENTER]) skipMenu();
+    if (GameVars.game) {
+        if (GameVars.deltaTime) {
+            handleRetryScreen();
+            handleNextLevelScreen();
+            handleGameOverScreen();
+            handleGameCompletedScreen();
+            if (GameVars.game.gameState === GameState.RUNNING) GameVars.game.update();
+            if (GameVars.keys[InputKey.ENTER]) skipMenu();
+        }
     } else {
         if (skipDelayTimer >= skipDelayDuration) {
             if (GameVars.keys[InputKey.ENTER]) startGame();

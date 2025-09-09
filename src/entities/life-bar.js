@@ -32,7 +32,7 @@ export class LifeBar {
         this.lifeBackgroundCtx.clearRect(0, 0, this.lifeBackgroundCanv.width, this.lifeBackgroundCanv.height);
         this.lifeCtx.clearRect(0, 0, this.lifeCanv.width, this.lifeCanv.height);
 
-        if (!this.isMenu) genSmallBox(this.lifeBackgroundCtx, 0, 0, (8 * 3) + 2, 10, toPixelSize(1), "#00000066", "#100f0f66");
+        if (!this.isMenu) genSmallBox(this.lifeBackgroundCtx, 0, 0, (8 * 3) + 2, 10, toPixelSize(1), "#030f2666", "#030f2666");
 
         for (let i = 0; i < 3; i++) {
             drawSprite(this.lifeBackgroundCtx, heart, toPixelSize(this.size), 2 + (8 * i), 2, { "ho": "#2f1519", "hi": "#100f0f" });

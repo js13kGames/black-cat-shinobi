@@ -4,6 +4,8 @@ export const TileType = {
     HOUSE_CEILING: 2,
     HOUSE_BOTTOM: 3,
     HOLE: 4,
-    WALL: 5,
+    STONE: 5,
+    SPIKES: 6,
+    PLAYER: 8,
     GATE: 9,
 }
