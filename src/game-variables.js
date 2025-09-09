@@ -20,7 +20,7 @@ const pixelCal = (min, max) => {
     let hgPixelSize = Math.round((GameVars.gameH - 270) * ((max - min) / (1100 - 270)) + min);
     let wdPixelSize = Math.round((GameVars.gameW - 480) * ((max - min) / (1000 - 480)) + min);
     let pixelSize = hgPixelSize < wdPixelSize ? hgPixelSize : wdPixelSize;
-    return pixelSize >= 1 ? pixelSize + 2 : 1;
+    return pixelSize >= 1 ? pixelSize + 1 : 1;
 };
 
 let isMobile;

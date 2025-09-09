@@ -9,7 +9,7 @@ export class Floor {
         this.tileType = TileType.FLOOR;
         this.isCollidable = true;
         this.isAboveGround = isAboveGround;
-        this.collisionObj = new SquareObject(x * toPixelSize(16), y * toPixelSize(16), toPixelSize(16), toPixelSize(16));
+        this.collisionObj = new SquareObject(x * toPixelSize(16), y * toPixelSize(16), toPixelSize(16), toPixelSize(isAboveGround ? 16 : 32));
     }
 
     draw(ctx) {
@@ -26,8 +26,7 @@ export class Floor {
             ctx.fillRect(this.collisionObj.x, this.collisionObj.y, toPixelSize(16), toPixelSize(16));
         }
         generateBox(ctx,
-            convertToMapPixel(this.collisionObj.x), convertToMapPixel(this.collisionObj.y),
-            7, 7,
+            convertToMapPixel(this.collisionObj.x), convertToMapPixel(this.collisionObj.y), 7, 7,
             toPixelSize(2), this.isAboveGround ? "#2f5851" : "#4c7972", () => randomNumb(100) < 5);
     }
 }
