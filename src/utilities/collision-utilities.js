@@ -41,6 +41,7 @@ export const checkForCollisions = (originalRect, fakeMovRect, fn, isGravity) => 
     if (boardY < -1) return TileType.EMPTY;
     for (let y = clamp(boardY - 1, 0, board.length - 1); y <= clamp(boardY + 1, 0, board.length - 1); y++) {
         for (let x = clamp(boardX - 1, 0, board[0].length - 1); x <= clamp(boardX + 1, 0, board[0].length - 1); x++) {
+            if (!!board[y][x] && board[y][x].tileType === TileType.HEART && rectCollision(fakeMovRect, board[y][x].collisionObj)) GameVars.game.gainLife(x, y);
             if (!!board[y][x] && board[y][x].isCollidable && rectCollision(fakeMovRect, board[y][x].collisionObj)) {
                 if (isGravity) {
                     if (board[y][x].tileType === TileType.HOUSE_CEILING && !GameVars.keys[InputKey.JUMP] && rectCollision(originalRect, board[y][x].collisionObj)) {

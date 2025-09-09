@@ -8,6 +8,7 @@ import { createElem, setElemSize } from "../utilities/elem-utilities";
 import { randomNumb, randomNumbOnRange } from "../utilities/general-utilities";
 import { Floor } from "./tiles/floor";
 import { Gate } from "./tiles/gate";
+import { Heart } from "./tiles/heart";
 import { Hole } from "./tiles/hole";
 import { HouseBottom } from "./tiles/house-bottom";
 import { HouseCeiling } from "./tiles/house-ceiling";
@@ -36,8 +37,8 @@ export class Board {
     }
 
     reset(levelData, player) {
-        this.boardW = Math.round(clamp(levelData[0].length, GameVars.roomWidth, 256));
-        this.boardH = Math.round(clamp(GameVars.roomHeight + 3, (levelData.length * 2) + 3, 64));
+        this.boardW = Math.ceil(clamp(levelData[0].length, GameVars.roomWidth, 256));
+        this.boardH = Math.ceil(clamp(GameVars.roomHeight + 3, (levelData.length * 2) + 3, 64));
 
         GameVars.levelW = this.boardW * toPixelSize(16);
         GameVars.levelH = this.boardH * toPixelSize(16);
@@ -136,6 +137,8 @@ export class Board {
                 return new Hole(x, y);
             case TileType.STONE:
                 return new Stone(x, y);
+            case TileType.HEART:
+                return new Heart(x, y);
             case TileType.PLAYER:
                 player.reset(x, y);
                 return null;
@@ -178,9 +181,9 @@ export class Board {
 
         moonCanvasCtx.fillStyle = "#030f26";
         moonCanvasCtx.fillRect(0, 0, this.moonCanvas.width, this.moonCanvas.height);
-        const moonRadius = this.moonCanvas.height / 2 / toPixelSize(1);
-        const moonWidth = moonRadius / 5;
-        const moonX = this.moonCanvas.width / 2 / toPixelSize(2) - moonRadius + moonWidth;
+        const moonRadius = Math.round(this.moonCanvas.height / 2 / toPixelSize(1));
+        const moonWidth = Math.round(moonRadius / 5);
+        const moonX = Math.round(this.moonCanvas.width / 2 / toPixelSize(2) - moonRadius + moonWidth);
         generateSphere(moonCanvasCtx, moonX, 5, moonRadius, toPixelSize(1), "#9bf2fa");
         generateSphere(moonCanvasCtx, moonX - moonWidth, 8, moonRadius - 3, toPixelSize(1), "#030f26");
         generateBox(moonCanvasCtx, 0, 0, this.moonCanvas.width / toPixelSize(1), this.moonCanvas.height / toPixelSize(1), toPixelSize(1), "#9bf2fa", () => randomNumb(1000) < 1);

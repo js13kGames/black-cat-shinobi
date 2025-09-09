@@ -188,7 +188,7 @@ const drawRetryMenu = () => {
     const retryMenuCtx = retryMenuCanv.getContext("2d");
     clearCanvas(retryMenuCtx, retryMenuCanv, "#452228dd");
     drawPixelTextInCanvas("level - " + (GameVars.game?.levelIndex + 1), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
-    retryHearts.draw(GameVars.gameHalfW, GameVars.gameHalfH + toPixelSize(6), GameVars.game.numberOfRetrys);
+    retryHearts.draw(GameVars.gameHalfW, GameVars.gameHalfH + toPixelSize(6), GameVars.game.lives);
 }
 
 const drawNextLevelMenu = () => {

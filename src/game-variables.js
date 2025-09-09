@@ -54,8 +54,10 @@ let mainMenuDiv;
 let gameDiv;
 
 let game;
+let maxLives = 3;
 
 let sound;
+
 
 let fps = 60;
 let deltaTime;
@@ -97,6 +99,7 @@ export const GameVars = {
     gameDiv,
 
     game,
+    maxLives,
     sound,
 
     fps,

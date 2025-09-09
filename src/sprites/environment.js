@@ -16,3 +16,14 @@ export const leaf = [
     ["lc", "mc", "dc", null, "lc"],
     ["dk", null, null, null, null],
 ];
+
+export const spike = [
+    ["#edeef7", null, null, null, null, null, null, null],
+    ["#edeef7", null, null, null, null, null, null, null],
+    ["#999a9e", "#edeef7", null, null, null, null, null, null],
+    ["#999a9e", "#edeef7", null, null, null, null, null, null],
+    ["#999a9e", "#999a9e", "#edeef7", null, null, null, null, null],
+    ["#999a9e", "#999a9e", "#edeef7", null, null, null, null, null],
+    ["#999a9e", "#3e3846", "#999a9e", "#edeef7", null, null, null, null],
+    ["#999a9e", "#3e3846", "#999a9e", "#edeef7", null, null, null, null],
+];

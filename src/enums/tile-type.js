@@ -6,6 +6,7 @@ export const TileType = {
     HOLE: 4,
     STONE: 5,
     SPIKES: 6,
+    HEART: 7,
     PLAYER: 8,
     GATE: 9,
 }

@@ -1,4 +1,4 @@
-import { toPixelSize } from "../game-variables";
+import { GameVars, toPixelSize } from "../game-variables";
 import { heart } from "../sprites/heart";
 import { genSmallBox } from "../utilities/box-generator";
 import { drawSprite } from "../utilities/draw-utilities";
@@ -16,12 +16,12 @@ export class LifeBar {
         this.lifeCanv = createElem(div, "canvas");
         this.lifeCtx = this.lifeCanv.getContext("2d");
 
-        this.draw(3);
+        this.draw(GameVars.maxLives);
     }
 
     draw(centerX, centerY, lifeValue) {
-        setElemSize(this.lifeBackgroundCanv, toPixelSize((7 * 3) + 6) * this.size, toPixelSize(11) * this.size);
-        setElemSize(this.lifeCanv, toPixelSize((7 * 3) + 6) * this.size, toPixelSize(11) * this.size);
+        setElemSize(this.lifeBackgroundCanv, toPixelSize((7 * GameVars.maxLives) + 6) * this.size, toPixelSize(11) * this.size);
+        setElemSize(this.lifeCanv, toPixelSize((7 * GameVars.maxLives) + 6) * this.size, toPixelSize(11) * this.size);
 
         const xPos = centerX - this.lifeBackgroundCanv.width / 2;
         const yPos = centerY - this.lifeBackgroundCanv.height / 2;
@@ -34,7 +34,7 @@ export class LifeBar {
 
         if (!this.isMenu) genSmallBox(this.lifeBackgroundCtx, 0, 0, (8 * 3) + 2, 10, toPixelSize(1), "#030f2666", "#030f2666");
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < GameVars.maxLives; i++) {
             drawSprite(this.lifeBackgroundCtx, heart, toPixelSize(this.size), 2 + (8 * i), 2, { "ho": "#2f1519", "hi": "#100f0f" });
             drawSprite(this.lifeCtx, heart, toPixelSize(this.size), (8 * i), 2, { "ho": "#9bf2fa", "hi": "#a80000" });
         }

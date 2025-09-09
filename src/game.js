@@ -17,6 +17,7 @@ export class Game {
     constructor() {
         this.camPos = new Point(0, 0);
 
+        this.lives = GameVars.maxLives;
         this.levelIndex = 0;
         this.board = new Board();
 
@@ -29,8 +30,10 @@ export class Game {
         this.levelInfoCanvas = createElem(GameVars.gameDiv, "canvas");
         this.resetLevelInfo();
 
+        this.lifeBarPos = new Point(toPixelSize(13.5 + 8), toPixelSize(5.5 + 8));
+
         this.lifeBar = new LifeBar(GameVars.gameDiv, 1);
-        this.lifeBar.draw(toPixelSize(13.5 + 8), toPixelSize(5.5 + 8), this.numberOfRetrys);
+        this.lifeBar.draw(this.lifeBarPos.x, this.lifeBarPos.y, this.lives);
 
         this.gameOverCollisionObj = new SquareObject(0, GameVars.levelH - toPixelSize(1), GameVars.levelW, toPixelSize(4));
 
@@ -39,7 +42,6 @@ export class Game {
             GameVars.actionPad = new ActionPad();
         }
 
-        this.numberOfRetrys = 3;
         this.gameState = GameState.RUNNING;
 
         this.timeoutID;
@@ -51,7 +53,10 @@ export class Game {
 
         this.board.reset(levels[this.levelIndex], this.player);
 
-        this.lifeBar.draw(toPixelSize(13.5 + 8), toPixelSize(5.5 + 8), this.numberOfRetrys);
+        this.lifeBarPos.x = toPixelSize(13.5 + 8);
+        this.lifeBarPos.y = toPixelSize(5.5 + 8);
+
+        this.lifeBar.draw(this.lifeBarPos.x, this.lifeBarPos.y, this.lives);
 
         this.gameOverCollisionObj.y = GameVars.levelH - toPixelSize(1);
         this.gameOverCollisionObj.w = GameVars.levelW;
@@ -105,8 +110,8 @@ export class Game {
     }
 
     takeDamage() {
-        this.numberOfRetrys--;
-        if (this.numberOfRetrys <= 0) {
+        this.lives--;
+        if (this.lives <= 0) {
             GameVars.sound.playOverSound();
             this.gameState = GameState.GAME_OVER;
         } else {
@@ -115,6 +120,21 @@ export class Game {
             this.timeoutID = setTimeout(() => {
                 this.setLevel();
             }, 2000)
+        }
+    }
+
+    gainLife(x, y) {
+        if (this.lives < GameVars.maxLives) {
+            GameVars.sound.victorySound();
+
+            this.lives++;
+            this.lifeBar.draw(this.lifeBarPos.x, this.lifeBarPos.y, this.lives);
+
+            const rect = this.board.boardArray[y][x].collisionObj;
+            const boardCanvasCtx = this.board.boardCanvas.getContext("2d");
+            boardCanvasCtx.clearRect(rect.x, rect.y, rect.w, rect.h);
+
+            this.board.boardArray[y][x] = null;
         }
     }
 

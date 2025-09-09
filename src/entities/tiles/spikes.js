@@ -1,6 +1,7 @@
 import { SquareObject } from "../../collision-objects/square-object";
 import { TileType } from "../../enums/tile-type";
 import { toPixelSize } from "../../game-variables";
+import { spike } from "../../sprites/environment";
 import { drawSprite } from "../../utilities/draw-utilities";
 
 export class Spikes {
@@ -23,14 +24,3 @@ export class Spikes {
         // ctx.fillRect(this.collisionObj.x, this.collisionObj.y, this.collisionObj.w, this.collisionObj.h);
     }
 }
-
-const spike = [
-    ["#edeef7", null, null, null, null, null, null, null],
-    ["#edeef7", null, null, null, null, null, null, null],
-    ["#999a9e", "#edeef7", null, null, null, null, null, null],
-    ["#999a9e", "#edeef7", null, null, null, null, null, null],
-    ["#999a9e", "#999a9e", "#edeef7", null, null, null, null, null],
-    ["#999a9e", "#999a9e", "#edeef7", null, null, null, null, null],
-    ["#999a9e", "#3e3846", "#999a9e", "#edeef7", null, null, null, null],
-    ["#999a9e", "#3e3846", "#999a9e", "#edeef7", null, null, null, null],
-];
