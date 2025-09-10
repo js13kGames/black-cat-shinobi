@@ -1,6 +1,6 @@
 # Black Cat Shinobi
 
-Is a platform game were you need to perform jumps and acrobatics moves to find the Torii gates to finish your shinobi missions.
+Is a platform game where you need to perform jumps and acrobatics moves to find the Torii gates, so you can finish your shinobi missions.
 
 You can play a live version here: https://igorfie.gitlab.io/black-cat-shinobi/
 
@@ -10,14 +10,16 @@ This game was created for the [2025 js13kGames](https://js13kgames.com/) where t
 
 ## Game instructions
 - Use keyboard `Left`/`Right` Arrows or `A`/`D` to move character Sideways
-- Use `Up` arrow or `W` to jump
-- Hold Jump to glide during or after a jump
-- Use `Down` arrow or `S` to fall
+- Use `Up` Arrow or `W` to Jump
+- Hold Jump to glide during or after a Jump
+- Use `Down` Arrow or `S` to Fall
+- `Mobile` provides action buttons for player to use
+- To mute the game click on the `Speaker` icon
 
 ## TODO-FOR-FUTURE-ME
 - Refactor/reorganize all the code
 - Add enemies to game that pursuit you and throw shurikens at you
-- Add player shuriken attack, so he can defect enemies shurikens and defeat them
+- Add player shuriken attack, so he can deflect enemy shurikens and defeat them
 - Add arrow dispensers
 
 ### Setup
