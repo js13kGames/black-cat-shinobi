@@ -7,7 +7,8 @@ export const InputKey = {
     JUMP: 4,
     ATK: 5,
 
-    ENTER: 9
+    ENTER: 9,
+    ESC: 10
 }
 
 export const getInputKey = (key) => {
@@ -36,5 +37,8 @@ export const getInputKey = (key) => {
         case " ":
         case "Enter":
             return InputKey.ENTER;
+
+        case "Escape":
+            return InputKey.ESC;
     }
 }

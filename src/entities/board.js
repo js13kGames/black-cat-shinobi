@@ -36,9 +36,9 @@ export class Board {
         this.bambooFrontCanvas = createElem(GameVars.gameDiv, "canvas");
     }
 
-    reset(levelData, player) {
-        this.boardW = Math.ceil(clamp(levelData[0].length, GameVars.roomWidth, 256));
-        this.boardH = Math.ceil(clamp(GameVars.roomHeight + 3, (levelData.length * 2) + 3, 64));
+    reset(missionData, player) {
+        this.boardW = Math.ceil(clamp(missionData[0].length, GameVars.roomWidth, 256));
+        this.boardH = Math.ceil(clamp(GameVars.roomHeight + 3, (missionData.length * 2) + 3, 64));
 
         GameVars.levelW = this.boardW * toPixelSize(16);
         GameVars.levelH = this.boardH * toPixelSize(16);
@@ -57,58 +57,58 @@ export class Board {
         this.cloudCanvas.style.translate = "";
         this.bambooFrontCanvas.style.translate = "";
 
-        this.boardArray = this.initBoardArray(levelData, player);
+        this.boardArray = this.initBoardArray(missionData, player);
     }
 
-    initBoardArray(levelData, player) {
+    initBoardArray(missionData, player) {
         let newBoard = [];
-        const levelDataH = levelData.length * 2;
-        const levelYstart = this.boardH - levelDataH - 1;
+        const missionDataH = missionData.length * 2;
+        const levelYstart = this.boardH - missionDataH - 1;
         let yIndex = 0;
 
-        const levelDataW = levelData[0].length;
-        const levelXstart = (this.boardW - levelDataW) / 2;
+        const missionDataW = missionData[0].length;
+        const levelXstart = (this.boardW - missionDataW) / 2;
         let xIndex = 0;
 
         for (let y = 0; y < this.boardH; y++) {
             newBoard.push([]);
             for (let x = 0; x < this.boardW; x++) {
                 if (y >= levelYstart) {
-                    let levelDataIndex = Math.floor(yIndex === 0 ? 0 : yIndex / 2);
-                    levelDataIndex = levelDataIndex < levelData.length - 1 ? levelDataIndex : levelData.length - 1;
+                    let missionDataIndex = Math.floor(yIndex === 0 ? 0 : yIndex / 2);
+                    missionDataIndex = missionDataIndex < missionData.length - 1 ? missionDataIndex : missionData.length - 1;
                     if (yIndex % 2 === 0) {
-                        if (levelDataIndex > 0 && levelData[levelDataIndex][xIndex] === TileType.FLOOR && levelData[levelDataIndex - 1][xIndex] === TileType.FLOOR) {
+                        if (missionDataIndex > 0 && missionData[missionDataIndex][xIndex] === TileType.FLOOR && missionData[missionDataIndex - 1][xIndex] === TileType.FLOOR) {
                             newBoard[y].push(new Floor(x, y, true));
                         } else {
-                            newBoard[y].push(this.retrieveBlockType(levelData[levelDataIndex][xIndex], x, y, player));
+                            newBoard[y].push(this.retrieveGameBlock(missionData[missionDataIndex][xIndex], x, y, player));
                         }
                     } else {
-                        if (levelData[levelDataIndex][xIndex] === TileType.SPIKES) {
+                        if (missionData[missionDataIndex][xIndex] === TileType.SPIKES) {
                             if (y >= this.boardH - 2) {
                                 if (y === this.boardH - 2) newBoard[y - 1][x] = new Hole(x, y - 1);
                                 newBoard[y].push(new Spikes(x, y));
-                            } else if (levelDataIndex + 1 < levelData.length && levelData[levelDataIndex + 1][xIndex] !== TileType.EMPTY && levelData[levelDataIndex + 1][xIndex] !== TileType.SPIKES) {
+                            } else if (missionDataIndex + 1 < missionData.length && missionData[missionDataIndex + 1][xIndex] !== TileType.EMPTY && missionData[missionDataIndex + 1][xIndex] !== TileType.SPIKES) {
                                 newBoard[y].push(new Spikes(x, y));
-                            } else if (levelDataIndex - 1 >= 0 && levelData[levelDataIndex - 1][xIndex] !== TileType.EMPTY && levelData[levelDataIndex - 1][xIndex] !== TileType.SPIKES) {
+                            } else if (missionDataIndex - 1 >= 0 && missionData[missionDataIndex - 1][xIndex] !== TileType.EMPTY && missionData[missionDataIndex - 1][xIndex] !== TileType.SPIKES) {
                                 newBoard[y].push(new Spikes(x, y - 1, true));
-                            } else if (xIndex - 1 >= 0 && levelData[levelDataIndex][xIndex - 1] !== TileType.EMPTY) {
+                            } else if (xIndex - 1 >= 0 && missionData[missionDataIndex][xIndex - 1] !== TileType.EMPTY) {
                                 newBoard[y].push(new Spikes(x, y, true, true));
-                            } else if (xIndex + 1 < levelData[0].length - 1 && levelData[levelDataIndex][xIndex + 1] !== TileType.EMPTY) {
+                            } else if (xIndex + 1 < missionData[0].length - 1 && missionData[missionDataIndex][xIndex + 1] !== TileType.EMPTY) {
                                 newBoard[y].push(new Spikes(x, y, false, true));
                             } else {
                                 newBoard[y].push(new Spikes(x, y));
                             }
-                        } else if (levelData[levelDataIndex][xIndex] === TileType.HOUSE_CEILING) {
-                            newBoard[y].push(new HouseBottom(x, y, levelDataIndex + 1 === levelData.length - 1 || (levelData[levelDataIndex + 1][xIndex] === TileType.FLOOR || levelData[levelDataIndex + 1][xIndex] === TileType.STONE)));
-                        } else if ((levelData[levelDataIndex][xIndex] === TileType.STONE || levelData[levelDataIndex][xIndex] === TileType.FLOOR) && levelDataIndex !== levelData.length - 1) {
-                            newBoard[y].push(this.retrieveBlockType(levelData[levelDataIndex][xIndex], x, y));
+                        } else if (missionData[missionDataIndex][xIndex] === TileType.HOUSE_CEILING) {
+                            newBoard[y].push(new HouseBottom(x, y, missionDataIndex + 1 === missionData.length - 1 || (missionData[missionDataIndex + 1][xIndex] === TileType.FLOOR || missionData[missionDataIndex + 1][xIndex] === TileType.STONE)));
+                        } else if ((missionData[missionDataIndex][xIndex] === TileType.STONE || missionData[missionDataIndex][xIndex] === TileType.FLOOR) && missionDataIndex !== missionData.length - 1) {
+                            newBoard[y].push(this.retrieveGameBlock(missionData[missionDataIndex][xIndex], x, y));
                         } else {
                             newBoard[y].push(null);
                         }
                     }
                     if (x >= levelXstart) {
                         xIndex++;
-                        xIndex = xIndex < levelDataW - 1 ? xIndex : levelDataW - 1;
+                        xIndex = xIndex < missionDataW - 1 ? xIndex : missionDataW - 1;
                     }
                 } else {
                     newBoard[y].push(null);
@@ -117,7 +117,7 @@ export class Board {
             xIndex = 0;
             if (y >= levelYstart) {
                 yIndex++;
-                yIndex = yIndex < levelDataH - 1 ? yIndex : levelDataH - 1;
+                yIndex = yIndex < missionDataH - 1 ? yIndex : missionDataH - 1;
             }
         }
         return newBoard;
@@ -127,8 +127,8 @@ export class Board {
         return tileType === TileType.FLOOR || tileType === TileType.HOLE;
     }
 
-    retrieveBlockType(levelDataType, x, y, player) {
-        switch (levelDataType) {
+    retrieveGameBlock(tileType, x, y, player) {
+        switch (tileType) {
             case TileType.FLOOR:
                 return new Floor(x, y, y < this.boardH - 3);
             case TileType.HOUSE_CEILING:

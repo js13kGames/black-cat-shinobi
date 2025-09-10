@@ -5,7 +5,7 @@ import { Game } from "./game";
 import { GameVars, toPixelSize } from "./game-variables";
 import { Sound } from "./sound/sound";
 import { CharacterFall, PlayerColors } from "./sprites/character";
-import { levels } from "./sprites/levels";
+import { missions } from "./sprites/missions";
 import { AudioSprite, SpeakerSprite } from "./sprites/sound-sprites";
 import { generateBox, generateSphere, genSmallBox } from "./utilities/box-generator";
 import { createElem, setElemSize } from "./utilities/elem-utilities"
@@ -24,9 +24,9 @@ let retryMenuDiv;
 let retryMenuCanv;
 let retryHearts;
 
-let isShowingNextLevel;
-let nextLevelDiv;
-let nextLevelCanvas;
+let isShowingNexMission;
+let nextMissionDiv;
+let nextMissionCanvas;
 
 let isShowingFinishMenu;
 
@@ -38,8 +38,6 @@ let gameCompletedCanv;
 
 let soundBtnCanv;
 let lastSoundState;
-
-let lastScore = 0;
 
 let secondsPassed;
 let oldTimeStamp = 0;
@@ -80,7 +78,7 @@ const setResize = () => {
     window.addEventListener("resize", () => {
         GameVars.updatePixelSize(window.innerWidth, window.innerHeight);
         drawMenus();
-        GameVars.game && GameVars.game.setLevel();
+        GameVars.game && GameVars.game.setMission();
     });
 }
 
@@ -96,8 +94,8 @@ const createGameElements = () => {
     retryMenuCanv = createElem(retryMenuDiv, "canvas", null, null, null, null, null, () => skipMenu());
     retryHearts = new LifeBar(retryMenuDiv, 2, true);
 
-    nextLevelDiv = createElem(mainDiv, "div", null, ["hidden"]);
-    nextLevelCanvas = createElem(nextLevelDiv, "canvas", null, null, null, null, null, () => skipMenu());
+    nextMissionDiv = createElem(mainDiv, "div", null, ["hidden"]);
+    nextMissionCanvas = createElem(nextMissionDiv, "canvas", null, null, null, null, null, () => skipMenu());
 
     gameOverDiv = createElem(mainDiv, "div", null, ["hidden"]);
     gameOverCanv = createElem(gameOverDiv, "canvas", null, null, null, null, null, () => skipMenu());
@@ -123,7 +121,7 @@ const drawMenus = () => {
 
     setElemSize(gameOverCanv, GameVars.gameW, GameVars.gameH);
 
-    setElemSize(nextLevelCanvas, GameVars.gameW, GameVars.gameH);
+    setElemSize(nextMissionCanvas, GameVars.gameW, GameVars.gameH);
 
     setElemSize(gameCompletedCanv, GameVars.gameW, GameVars.gameH);
 
@@ -138,8 +136,8 @@ const drawMainMenu = () => {
     const mainMenuCtx = mainMenuCanv.getContext("2d");
     clearCanvas(mainMenuCtx, mainMenuCanv, "#030f26");
 
-    const moonRadius = mainMenuCanv.height / 2 / toPixelSize(1);
-    const moonX = mainMenuCanv.width / 2 / toPixelSize(2) - moonRadius + 20;
+    const moonRadius = Math.round(mainMenuCanv.height / 2 / toPixelSize(1));
+    const moonX = Math.round(mainMenuCanv.width / 2 / toPixelSize(2) - moonRadius + 20) - toPixelSize(1);
     generateSphere(mainMenuCtx, moonX + 5, 5, moonRadius, toPixelSize(1), "#9bf2fa");
     generateSphere(mainMenuCtx, moonX - 30, 8, moonRadius - 3, toPixelSize(1), "#030f26");
     generateBox(mainMenuCtx, 0, 0, mainMenuCanv.width / toPixelSize(1), mainMenuCanv.height / toPixelSize(1), toPixelSize(1), "#9bf2fa", () => randomNumb(1000) < 1);
@@ -149,7 +147,7 @@ const drawMainMenu = () => {
 
     if (GameVars.highScore) {
         genSmallBox(mainMenuCtx, -1, -1, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 24, toPixelSize(2), "#060606", "#060606");
-        drawPixelTextInCanvas(GameVars.highScore === levels.length + 1 ? "game completed" : "top level - " + GameVars.highScore, mainMenuCtx, toPixelSize(1), Math.round(GameVars.gameW / 2 / toPixelSize(1)), 42, "#9bf2fa", 1);
+        drawPixelTextInCanvas(GameVars.highScore === missions.length + 1 ? "game completed" : "top mission - " + GameVars.highScore, mainMenuCtx, toPixelSize(1), Math.round(GameVars.gameW / 2 / toPixelSize(1)), 42, "#9bf2fa", 1);
     } else {
         genSmallBox(mainMenuCtx, -1, -1, Math.floor(mainMenuCanv.width / toPixelSize(2)) + 2, 19, toPixelSize(2), "#060606", "#060606");
     }
@@ -187,15 +185,15 @@ const drawGameCompletedMenu = () => {
 const drawRetryMenu = () => {
     const retryMenuCtx = retryMenuCanv.getContext("2d");
     clearCanvas(retryMenuCtx, retryMenuCanv, "#452228dd");
-    drawPixelTextInCanvas("level - " + (GameVars.game?.levelIndex + 1), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
+    drawPixelTextInCanvas("mission - " + (GameVars.game?.missionIndex + 1), retryMenuCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
     retryHearts.draw(GameVars.gameHalfW, GameVars.gameHalfH + toPixelSize(6), GameVars.game.lives);
 }
 
-const drawNextLevelMenu = () => {
-    const nextLevelCtx = nextLevelCanvas.getContext("2d");
-    clearCanvas(nextLevelCtx, nextLevelCanvas, "#030f26dd");
-    drawPixelTextInCanvas("level - " + GameVars.game?.levelIndex, nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
-    drawPixelTextInCanvas("completed", nextLevelCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
+const drawNexMissionMenu = () => {
+    const nextMissionCtx = nextMissionCanvas.getContext("2d");
+    clearCanvas(nextMissionCtx, nextMissionCanvas, "#030f26dd");
+    drawPixelTextInCanvas("mission - " + GameVars.game?.missionIndex, nextMissionCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) - 10, "#9bf2fa", 2);
+    drawPixelTextInCanvas("completed", nextMissionCtx, GameVars.pixelSize, GameVars.gameWdAsPixels / 2, (GameVars.gameHgAsPixels / 2) + 2, "#9bf2fa", 1);
 }
 
 const drawSoundBtn = (force) => {
@@ -237,7 +235,7 @@ const gameLoop = (timeStamp) => {
     if (GameVars.game) {
         if (GameVars.deltaTime) {
             handleRetryScreen();
-            handleNextLevelScreen();
+            handleNextMissionScreen();
             handleGameOverScreen();
             handleGameCompletedScreen();
             if (GameVars.game.gameState === GameState.RUNNING) GameVars.game.update();
@@ -257,8 +255,8 @@ const gameLoop = (timeStamp) => {
 const skipMenu = () => {
     if (GameVars.game.gameState === GameState.RETRY && isShowingRetry) {
         skipRetryScreen();
-    } else if (GameVars.game.gameState === GameState.NEXT_LEVEL && isShowingNextLevel) {
-        skipNextLevelScreen();
+    } else if (GameVars.game.gameState === GameState.NEXT_MISSION && isShowingNexMission) {
+        skipNextMissionScreen();
     } else if (GameVars.game.gameState === GameState.GAME_OVER && isShowingFinishMenu) {
         skipDelayTimer = 0;
         skipFinishMenu(gameOverDiv);
@@ -284,20 +282,20 @@ const skipRetryScreen = () => {
     retryMenuDiv.classList.add("hidden");
 }
 
-const handleNextLevelScreen = () => {
-    if (GameVars.game.gameState === GameState.NEXT_LEVEL && !isShowingNextLevel) {
-        isShowingNextLevel = true;
+const handleNextMissionScreen = () => {
+    if (GameVars.game.gameState === GameState.NEXT_MISSION && !isShowingNexMission) {
+        isShowingNexMission = true;
         updateScore();
-        drawNextLevelMenu();
-        nextLevelDiv.classList.remove("hidden");
-    } else if (GameVars.game.gameState !== GameState.NEXT_LEVEL && isShowingNextLevel) {
-        skipNextLevelScreen();
+        drawNexMissionMenu();
+        nextMissionDiv.classList.remove("hidden");
+    } else if (GameVars.game.gameState !== GameState.NEXT_MISSION && isShowingNexMission) {
+        skipNextMissionScreen();
     }
 }
 
-const skipNextLevelScreen = () => {
-    isShowingNextLevel = false;
-    nextLevelDiv.classList.add("hidden");
+const skipNextMissionScreen = () => {
+    isShowingNexMission = false;
+    nextMissionDiv.classList.add("hidden");
 }
 
 const handleGameOverScreen = () => {
@@ -327,7 +325,6 @@ const skipFinishMenu = (div) => {
     clearTimeout(timeoutID);
     updateHighScore();
     drawMainMenu();
-    lastScore = 0;
     isShowingFinishMenu = false;
     mainMenuDiv.classList.remove("hidden");
     div.classList.add("hidden");
@@ -336,8 +333,7 @@ const skipFinishMenu = (div) => {
 }
 
 const updateScore = () => {
-    lastScore = GameVars.score;
-    GameVars.score = GameVars.game.levelIndex + 1;
+    GameVars.score = GameVars.game.missionIndex + 1;
 }
 
 const updateHighScore = () => {

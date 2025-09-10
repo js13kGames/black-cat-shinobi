@@ -5,7 +5,7 @@ import { Player } from "./entities/player";
 import { Point } from "./entities/point";
 import { GameState } from "./enums/game-state";
 import { GameVars, toPixelSize } from "./game-variables";
-import { levels } from "./sprites/levels";
+import { missions } from "./sprites/missions";
 import { ActionPad } from "./ui/actionpad";
 import { MovePad } from "./ui/movepad";
 import { genSmallBox } from "./utilities/box-generator";
@@ -18,17 +18,17 @@ export class Game {
         this.camPos = new Point(0, 0);
 
         this.lives = GameVars.maxLives;
-        this.levelIndex = 0;
+        this.missionIndex = 0;
         this.board = new Board();
 
         this.board.createBackCanvas();
         this.player = new Player();
         this.board.createFrontCanvas();
 
-        this.board.reset(levels[this.levelIndex], this.player);
+        this.board.reset(missions[this.missionIndex], this.player);
 
-        this.levelInfoCanvas = createElem(GameVars.gameDiv, "canvas");
-        this.resetLevelInfo();
+        this.missionInfoCanvas = createElem(GameVars.gameDiv, "canvas");
+        this.resetMissionInfo();
 
         this.lifeBarPos = new Point(toPixelSize(13.5 + 8), toPixelSize(5.5 + 8));
 
@@ -47,11 +47,11 @@ export class Game {
         this.timeoutID;
     }
 
-    setLevel() {
+    setMission() {
         this.camPos.x = 0;
         this.camPos.y = 0;
 
-        this.board.reset(levels[this.levelIndex], this.player);
+        this.board.reset(missions[this.missionIndex], this.player);
 
         this.lifeBarPos.x = toPixelSize(13.5 + 8);
         this.lifeBarPos.y = toPixelSize(5.5 + 8);
@@ -68,21 +68,21 @@ export class Game {
             GameVars.movePad.update();
             GameVars.actionPad.update();
         }
-        this.resetLevelInfo();
+        this.resetMissionInfo();
     }
 
-    resetLevelInfo() {
-        const levelInfoCtx = this.levelInfoCanvas.getContext("2d");
+    resetMissionInfo() {
+        const missionInfoCtx = this.missionInfoCanvas.getContext("2d");
         const isNewRecord = GameVars.score > GameVars.highScore;
-        setElemSize(this.levelInfoCanvas, toPixelSize(isNewRecord ? 56 : 48), toPixelSize(isNewRecord ? 18 : 12));
-        this.levelInfoCanvas.style.translate = Math.round(GameVars.gameW / 2 - this.levelInfoCanvas.width / 2) + 'px ' + (toPixelSize(8)) + 'px';
-        levelInfoCtx.clearRect(0, 0, this.levelInfoCanvas.width, this.levelInfoCanvas.height);
-        genSmallBox(levelInfoCtx, 0, 0, Math.floor(this.levelInfoCanvas.width / toPixelSize(1)) - 1, Math.floor(this.levelInfoCanvas.height / toPixelSize(1)) - 1, toPixelSize(1), "#030f2666", "#030f2666");
+        setElemSize(this.missionInfoCanvas, toPixelSize(isNewRecord ? 56 : 48), toPixelSize(isNewRecord ? 18 : 12));
+        this.missionInfoCanvas.style.translate = Math.round(GameVars.gameW / 2 - this.missionInfoCanvas.width / 2) + 'px ' + (toPixelSize(8)) + 'px';
+        missionInfoCtx.clearRect(0, 0, this.missionInfoCanvas.width, this.missionInfoCanvas.height);
+        genSmallBox(missionInfoCtx, 0, 0, Math.floor(this.missionInfoCanvas.width / toPixelSize(1)) - 1, Math.floor(this.missionInfoCanvas.height / toPixelSize(1)) - 1, toPixelSize(1), "#030f2666", "#030f2666");
         if (isNewRecord) {
-            drawPixelTextInCanvas("new record!", levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), 5, "#9bf2fa", 1);
-            drawPixelTextInCanvas("level - " + (this.levelIndex + 1), levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), 13, "#9bf2fa", 1);
+            drawPixelTextInCanvas("new record!", missionInfoCtx, GameVars.pixelSize, this.missionInfoCanvas.width / toPixelSize(2), 5, "#9bf2fa", 1);
+            drawPixelTextInCanvas("mission - " + (this.missionIndex + 1), missionInfoCtx, GameVars.pixelSize, this.missionInfoCanvas.width / toPixelSize(2), 13, "#9bf2fa", 1);
         } else {
-            drawPixelTextInCanvas("level - " + (this.levelIndex + 1), levelInfoCtx, GameVars.pixelSize, this.levelInfoCanvas.width / toPixelSize(2), this.levelInfoCanvas.height / toPixelSize(2), "#9bf2fa", 1);
+            drawPixelTextInCanvas("mission - " + (this.missionIndex + 1), missionInfoCtx, GameVars.pixelSize, this.missionInfoCanvas.width / toPixelSize(2), this.missionInfoCanvas.height / toPixelSize(2), "#9bf2fa", 1);
         }
     }
 
@@ -95,11 +95,11 @@ export class Game {
                 this.camUpdate();
                 if (rectCollision(this.player.collisionObj, this.board.gate.collisionObj)) {
                     GameVars.sound.victorySound();
-                    this.levelIndex++;
-                    if (this.levelIndex < levels.length) {
-                        this.gameState = GameState.NEXT_LEVEL;
+                    this.missionIndex++;
+                    if (this.missionIndex < missions.length) {
+                        this.gameState = GameState.NEXT_MISSION;
                         this.timeoutID = setTimeout(() => {
-                            this.setLevel();
+                            this.setMission();
                         }, 2000)
                     } else {
                         this.gameState = GameState.GAME_COMPLETE;
@@ -118,7 +118,7 @@ export class Game {
             GameVars.sound.playerDeadSound();
             this.gameState = GameState.RETRY;
             this.timeoutID = setTimeout(() => {
-                this.setLevel();
+                this.setMission();
             }, 2000)
         }
     }
@@ -139,9 +139,9 @@ export class Game {
     }
 
     skip() {
-        if (this.gameState === GameState.NEXT_LEVEL || this.gameState === GameState.RETRY) {
+        if (this.gameState === GameState.NEXT_MISSION || this.gameState === GameState.RETRY) {
             clearTimeout(this.timeoutID);
-            this.setLevel();
+            this.setMission();
         }
     }
 
